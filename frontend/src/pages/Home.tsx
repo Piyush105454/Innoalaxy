@@ -23,6 +23,7 @@ import {
   Activity,
   ExternalLink,
   PlayCircle,
+  Video,
 } from "lucide-react";
 import { Navbar } from "../components/layout/Navbar";
 
@@ -159,6 +160,14 @@ const pastWork = [
     stats: "Expiry Alerts & Restock Predictions",
     color: "text-emerald-600 bg-emerald-50 border-emerald-200",
     link: "https://pharmacy-pro-rho.vercel.app/",
+  },
+  {
+    icon: Video,
+    title: "ScoutEdge AI",
+    desc: "Sports player video analysis AI. Built for a startup to analyze player form and technique directly from video, providing personalized sports guidance and coaching.",
+    stats: "Automated Video Form Analysis",
+    color: "text-orange-600 bg-orange-50 border-orange-200",
+    link: "https://scoutedge.vercel.app/",
   },
 ];
 
@@ -484,7 +493,7 @@ export function Home() {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {pastWork.map((work, i) => (
               <motion.div
                 key={work.title}
