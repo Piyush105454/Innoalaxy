@@ -6,12 +6,17 @@ Business context:
 - Industry: {industry}
 - Team size: {team_size}
 - Process description: {process_description}
-- Uploaded context: {additional_context or "None"}
+- Uploaded file/context data: {additional_context or "None provided"}
 
-Perform a REAL LIVE RESEARCH analysis of this specific type of business. Draw upon real-world industry facts to find exact places where automation or AI software is needed. 
-Identify specific use cases where custom "Google ADK AI Agents" that learn from their business data would solve their exact problems fast. Propose multiple specialized agents doing separate tasks.
+Perform a DEEP, REAL-WORLD LIVE RESEARCH analysis of their exact business context and the uploaded file data. Do NOT use generic language. 
 
-Include all this rich, business-specific AI research in the "industry_context" and "summary" fields. Do not use generic filler. Show them what AI automation software they actually need.
+You must specifically design a solution involving:
+1. Extracting their specific data types using Python/AI parsers.
+2. Saving and persisting this data into a Database (DB) with memory persistence.
+3. Building custom Google ADK AI Agents that learn from this exact business data.
+4. Multiple specialized AI agents communicating to do separate tasks fast.
+
+Include all this rich, highly specific analysis in the "industry_context" and "summary" fields. If they provided a file, reference its contents to prove you read it. Show them the exact AI automation software they need to build.
 
 Return ONLY valid JSON with this exact shape:
 {{
@@ -20,21 +25,20 @@ Return ONLY valid JSON with this exact shape:
   "automatable_percentage": 0,
   "pain_points": [
     {{
-      "title": "",
-      "description": "",
+      "title": "Specific pain point",
+      "description": "Specific description",
       "time_wasted_hours": 0.0,
       "automation_type": "data_extraction",
       "priority": "high",
       "complexity": "simple"
     }}
   ],
-  "summary": "Deep, real research summary explaining how Google ADK agents and custom software apply to their unique problems.",
+  "summary": "Deep research summary explaining data extraction, memory persistence, DB saving, and custom Google ADK agents for their unique problems.",
   "industry_context": "Real-world research facts about their industry and exactly what AI automation software they need."
 }}
 
 Rules:
 - Give realistic time estimates. Do not exaggerate.
-- If the description is vague, infer cautiously and say what needs confirmation in summary.
 - Use only these automation_type values: data_extraction, communication, reporting, scheduling, data_entry, monitoring.
 - Use only these priority values: high, medium, low.
 - Use only these complexity values: simple, medium, complex.
