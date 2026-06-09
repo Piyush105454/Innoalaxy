@@ -8,8 +8,10 @@ Business context:
 - Process description: {process_description}
 - Uploaded context: {additional_context or "None"}
 
-Consider Indian operating realities: WhatsApp-first communication, Tally/GST workflows, IndiaMART and Justdial leads,
-Excel-heavy reporting, manual follow-ups, regional language data, and owner-led decision making.
+Perform a REAL LIVE RESEARCH analysis of this specific type of business. Draw upon real-world industry facts to find exact places where automation or AI software is needed. 
+Identify specific use cases where custom "Google ADK AI Agents" that learn from their business data would solve their exact problems fast. Propose multiple specialized agents doing separate tasks.
+
+Include all this rich, business-specific AI research in the "industry_context" and "summary" fields. Do not use generic filler. Show them what AI automation software they actually need.
 
 Return ONLY valid JSON with this exact shape:
 {{
@@ -26,8 +28,8 @@ Return ONLY valid JSON with this exact shape:
       "complexity": "simple"
     }}
   ],
-  "summary": "",
-  "industry_context": ""
+  "summary": "Deep, real research summary explaining how Google ADK agents and custom software apply to their unique problems.",
+  "industry_context": "Real-world research facts about their industry and exactly what AI automation software they need."
 }}
 
 Rules:

@@ -127,6 +127,10 @@ export function AuditPage() {
               <p className="font-semibold">{store.auditResult.blueprint.build_time_weeks} week build · {store.auditResult.blueprint.hours_saved_weekly} hrs saved weekly · {store.auditResult.blueprint.price_range}</p>
               <div className="mt-3 flex flex-wrap gap-2">{store.auditResult.blueprint.integrations.map((x) => <span key={x} className="rounded border border-line bg-white px-2 py-1 text-sm">{x}</span>)}</div>
             </div>
+            <div className="mt-6 rounded-md border border-primary bg-blue-50 p-4 text-sm text-blue-900">
+              <p className="font-semibold mb-1">Direct in touch for team to build your custom AI agent or software.</p>
+              <p>Email: <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-bold underline">piyush.tamoli@innoalaxy.in</a></p>
+            </div>
             <Button className="mt-6" onClick={() => store.setStep(4)}>See live agent <ArrowRight size={16} /></Button>
           </motion.section>
         )}
@@ -138,7 +142,11 @@ export function AuditPage() {
             <div className="mt-6 min-h-72 rounded-lg bg-ink p-4 font-mono text-sm text-blue-100">
               {store.agentLogs.length === 0 ? <p className="text-slate-400">Integration and optimization logs will appear here.</p> : store.agentLogs.map((log) => <p key={`${log.timestamp}-${log.message}`}><span className="text-green-300">{new Date(log.timestamp).toLocaleTimeString()}</span> {log.message}</p>)}
             </div>
-            {store.agentOutput && <div className="mt-4 rounded-md border border-line p-4 whitespace-pre-line"><CheckCircle className="mb-2 text-success" />{store.agentOutput}</div>}
+            {store.agentOutput && <div className="mt-4 rounded-md border border-line p-4 whitespace-pre-line"><CheckCircle className="mb-2 inline-block mr-2 text-success" />{store.agentOutput}</div>}
+            <div className="mt-6 rounded-md border border-primary bg-blue-50 p-4 text-sm text-blue-900">
+              <p className="font-semibold mb-1">Direct in touch for team to build your custom AI agent or software.</p>
+              <p>Email: <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-bold underline">piyush.tamoli@innoalaxy.in</a></p>
+            </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href={import.meta.env.VITE_CALENDLY_URL ?? "#"}><Button><Calendar size={16} /> Book a free call</Button></a>
               <Button className="border-line bg-white text-ink" onClick={store.reset}><RotateCcw size={16} /> Start over</Button>
