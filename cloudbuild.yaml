@@ -36,3 +36,9 @@ images:
 options:
   logging: CLOUD_LOGGING_ONLY
 
+substitutions:
+  _AR_HOSTNAME: asia-south2-docker.pkg.dev
+  _AR_PROJECT_ID: thematic-fort-486011-t8
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _SERVICE_NAME: innoalaxy
+  _DEPLOY_REGION: asia-south2
