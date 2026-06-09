@@ -4,9 +4,9 @@ from uuid import UUID
 
 from pydantic import BaseModel, EmailStr, Field
 
-AutomationType = Literal["data_extraction", "communication", "reporting", "scheduling", "data_entry", "monitoring"]
-Priority = Literal["high", "medium", "low"]
-Complexity = Literal["simple", "medium", "complex"]
+AutomationType = str
+Priority = str
+Complexity = str
 
 
 class SubmissionRequest(BaseModel):
