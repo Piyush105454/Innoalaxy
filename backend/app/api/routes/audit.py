@@ -18,7 +18,7 @@ async def _read_upload(file: UploadFile | None) -> tuple[str | None, str | None]
     content = await file.read()
     if len(content) > 10 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File must be under 10MB")
-    text = content[:12000].decode("utf-8", errors="ignore")
+    text = content[:12000].decode("utf-8", errors="ignore").replace("\x00", "")
     return file.filename, text
 
 
