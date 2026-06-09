@@ -135,22 +135,46 @@ export function Home() {
       <Navbar />
 
       {/* ── SECTION 1 — Hero ── */}
-      <section className="pt-28 pb-20 bg-[#F4F6F9]">
-        <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-[1fr_460px] gap-12 items-center">
+      <section className="relative pt-32 pb-24 bg-gradient-to-b from-[#F8FAFC] to-[#F1F5F9] overflow-hidden">
+        {/* Ambient background glows */}
+        <div className="absolute top-0 right-0 w-[550px] h-[550px] rounded-full bg-blue-500/5 blur-[100px] -z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[450px] h-[450px] rounded-full bg-violet-500/5 blur-[90px] -z-10 pointer-events-none" />
+
+        <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
           {/* Left copy */}
           <motion.div {...fadeUp(0)}>
-            <h1 className="font-['DM_Sans'] text-5xl md:text-6xl font-bold leading-[1.1] text-ink mb-6">
+            <h1 className="font-['DM_Sans'] text-5xl md:text-6xl font-bold leading-[1.05] text-ink mb-6">
               Automate.{" "}
-              <span className="text-primary">Optimize.</span>
+              <span className="text-primary bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Optimize.</span>
               <br />
               Scale.
             </h1>
-            <p className="text-lg text-slate-600 leading-relaxed max-w-lg mb-3">
-              <strong className="text-ink">We find where your business wastes time.</strong> We build the AI that eliminates it.
+            <p className="text-lg text-slate-700 leading-relaxed max-w-lg mb-4">
+              <strong className="text-ink">We find where your business wastes time.</strong> We build the AI and custom software that eliminates it.
             </p>
-            <p className="text-base text-slate-500 leading-relaxed max-w-lg mb-8">
-              Businesses waste 10–20 hours every week on repetitive manual work. We audit your workflow, identify exactly what's slowing you down, and build custom AI agents that do that work automatically.
-            </p>
+            
+            {/* Core Value Props including custom software */}
+            <div className="space-y-3 mb-8 border-l-2 border-primary/20 pl-4">
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
+                <p className="text-sm text-slate-600 leading-normal">
+                  <strong className="text-ink font-semibold">AI-Powered Custom Software:</strong> Tailor-made business applications, sync portals, and custom CRM systems built by our expert engineering team.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
+                <p className="text-sm text-slate-600 leading-normal">
+                  <strong className="text-ink font-semibold">Intelligent AI Agents:</strong> Gemini & Google ADK agents running sales follow-ups, document extraction, and communication 24/7.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
+                <p className="text-sm text-slate-600 leading-normal">
+                  <strong className="text-ink font-semibold">Free Workflow Audit:</strong> Identify manual spreadsheet bottlenecks and WhatsApp leaks in under 5 minutes.
+                </p>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-3">
               <a
                 href="/audit"
@@ -167,80 +191,88 @@ export function Home() {
             </div>
           </motion.div>
 
-          {/* Right — two mock panels */}
-          <motion.div {...fadeUp(0.15)} className="relative hidden lg:block">
-            {/* automation_report panel */}
-            <div className="rounded-xl border border-gray-200 bg-white shadow-lg p-5 mb-4">
+          {/* Right — Interactive Before (Manual) vs After (AI & Custom Software) Workspace */}
+          <motion.div {...fadeUp(0.15)} className="relative space-y-4 hidden lg:block">
+            
+            {/* ⚠️ BEFORE: Manual Process Card */}
+            <div className="rounded-xl border border-red-100 bg-white/85 backdrop-blur-sm shadow-sm p-4 hover:shadow-md transition-all">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
                   </div>
-                  <span className="text-xs text-slate-500 font-mono">automation_report.xlsx</span>
+                  <span className="text-xs text-slate-500 font-mono">manual_bottlenecks.log</span>
                 </div>
-                <span className="text-xs text-blue-600 font-semibold flex items-center gap-1">
-                  <Zap size={11} /> Auto-filling
+                <span className="text-xs text-red-600 font-semibold flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded">
+                  ⚠️ 15+ Hours Wasted
+                </span>
+              </div>
+              <div className="space-y-1.5 text-xs text-slate-600">
+                <div className="flex justify-between border-b border-slate-100 pb-1.5">
+                  <span className="flex items-center gap-1.5"><FileText size={12} className="text-slate-400" /> excel_leads_copy.xlsx</span>
+                  <span className="text-red-500 font-mono">Duplicate entry row 182</span>
+                </div>
+                <div className="flex justify-between border-b border-slate-100 pb-1.5">
+                  <span className="flex items-center gap-1.5"><MessageSquare size={12} className="text-slate-400" /> manual_whatsapp_followup</span>
+                  <span className="text-amber-600 font-mono">Delayed by 14 hours</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="flex items-center gap-1.5"><Database size={12} className="text-slate-400" /> tally_invoice_entry</span>
+                  <span className="text-red-500 font-mono">Missing field amount</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ✨ AFTER: Automated State Card */}
+            <div className="rounded-xl border border-emerald-100 bg-white shadow-xl p-5 hover:shadow-2xl transition-all relative">
+              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shadow-md shadow-blue-200 z-10 animate-bounce">
+                🚀
+              </div>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </div>
+                  <span className="text-xs text-slate-500 font-mono">automation_workspace.xlsx</span>
+                </div>
+                <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded">
+                  <Zap size={11} className="animate-spin" /> Live AI Engine
                 </span>
               </div>
               <table className="w-full text-xs">
                 <thead>
                   <tr className="text-slate-400 border-b border-gray-100">
-                    <th className="text-left py-1.5 font-medium">Name</th>
+                    <th className="text-left py-1.5 font-medium">Workflow</th>
+                    <th className="text-left py-1.5 font-medium">AI Agent Action</th>
                     <th className="text-left py-1.5 font-medium">Status</th>
-                    <th className="text-left py-1.5 font-medium">Revenue</th>
-                    <th className="text-left py-1.5 font-medium">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    { name: "Acme Corp", status: "Active", rev: "₹12,400", action: "Synced" },
-                    { name: "Globe Inc", status: "Pending", rev: "₹8,750", action: "Processing" },
-                    { name: "Nova Ltd", status: "Active", rev: "₹23,100", action: "Synced" },
-                    { name: "SoftIO", status: "Review", rev: "₹5,200", action: "Updating" },
-                    { name: "Peak Co", status: "Active", rev: "₹15,000", action: "Synced" },
+                    { name: "Acme Leads", action: "Qualified & Assigned", status: "Synced" },
+                    { name: "WhatsApp Follow-up", action: "Auto-Sent in 2 mins", status: "Active" },
+                    { name: "Tally Integration", action: "Auto-Synced to DB", status: "Synced" },
                   ].map((row) => (
                     <tr key={row.name} className="border-b border-gray-50">
                       <td className="py-1.5 font-medium text-ink">{row.name}</td>
-                      <td className="py-1.5">
-                        <span
-                          className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                            row.status === "Active"
-                              ? "bg-emerald-100 text-emerald-700"
-                              : row.status === "Pending"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-slate-100 text-slate-600"
-                          }`}
-                        >
-                          {row.status}
-                        </span>
-                      </td>
-                      <td className="py-1.5 text-slate-600">{row.rev}</td>
-                      <td className="py-1.5 text-blue-600 flex items-center gap-1">
-                        <CheckCircle2 size={10} /> {row.action}
+                      <td className="py-1.5 text-slate-500">{row.action}</td>
+                      <td className="py-1.5 text-emerald-600 font-semibold flex items-center gap-1">
+                        <CheckCircle2 size={10} /> {row.status}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <p className="text-[10px] text-slate-400 mt-2">5/5 rows synced · <span className="text-blue-500">● Live</span></p>
+              <div className="flex justify-between items-center mt-3 pt-2 border-t border-slate-50">
+                <p className="text-[10px] text-slate-400">Custom software sync pipeline ● Connected</p>
+                <span className="text-[10px] text-primary font-bold">100% Accuracy</span>
+              </div>
             </div>
 
-            {/* Right workflow pipeline */}
-            <div className="absolute -right-6 top-0 w-44 space-y-2">
-              {pipelineSteps.map((s, i) => (
-                <div
-                  key={s.label}
-                  className={`flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-xs font-medium shadow-sm ${
-                    s.done ? "border-emerald-200 text-emerald-700" : s.color === "bg-amber-500" ? "border-amber-200 text-amber-700" : "border-gray-200 text-slate-500"
-                  }`}
-                >
-                  <div className={`w-2 h-2 rounded-full ${s.color}`} />
-                  {s.label}
-                </div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </section>
