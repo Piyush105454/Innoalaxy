@@ -54,7 +54,7 @@ class GeminiService:
         of the default short delay.
         """
         last_exc: Exception | None = None
-        delays = [5, 20, 45]  # seconds between each attempt
+        delays = [2, 5, 10]  # seconds between each attempt
 
         for attempt in range(max_attempts):
             try:
