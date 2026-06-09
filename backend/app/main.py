@@ -14,7 +14,13 @@ settings = get_settings()
 app = FastAPI(title="Innoalaxy API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:5173"],
+    allow_origins=[
+        settings.frontend_url,
+        "http://localhost:5173",
+        "https://innoalaxy.vercel.app",
+        "https://innoalaxy-delta.vercel.app",
+    ],
+    allow_origin_regex=r"https://innoalaxy-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
