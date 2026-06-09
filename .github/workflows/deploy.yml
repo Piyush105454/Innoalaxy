@@ -1,0 +1,137 @@
+name: CI / CD — Innoalaxy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Only one deployment runs at a time; cancel in-progress runs on new pushes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Job 1 — Tests (runs on every push & PR)
+# ─────────────────────────────────────────────────────────────────────────────
+jobs:
+  test-backend:
+    name: 🐍 Backend Tests
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: test
+      DATABASE_URL: sqlite:///./test.db
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      GEMINI_MODEL: gemini-2.5-flash
+      INNOALAXY_ADMIN_KEY: ${{ secrets.INNOALAXY_ADMIN_KEY }}
+      FRONTEND_URL: http://localhost:5173
+      DASHBOARD_URL: http://localhost:5173/dashboard
+      PIYUSH_WHATSAPP_NUMBER: ${{ secrets.PIYUSH_WHATSAPP_NUMBER }}
+      TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      TWILIO_WHATSAPP_FROM: whatsapp:+14155238886
+      WHATSAPP_DEMO_MODE: "true"
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: 📦 Install Python dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: ✅ Run backend tests
+        run: pytest backend/tests -v --tb=short
+
+  test-frontend:
+    name: ⚛️ Frontend Build Check
+    runs-on: ubuntu-latest
+    env:
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+      VITE_ADMIN_KEY: ${{ secrets.VITE_ADMIN_KEY }}
+      VITE_CALENDLY_URL: ${{ secrets.VITE_CALENDLY_URL }}
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦 Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: 🏗️ Build frontend (production)
+        run: npm run build
+        working-directory: frontend
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Job 2 — Deploy (only on push to main, after tests pass)
+# ─────────────────────────────────────────────────────────────────────────────
+  deploy-backend:
+    name: 🚀 Deploy Backend → GCP Cloud Run
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    environment: production       # requires manual approval if configured
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: ☁️ Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: 🐳 Submit Cloud Build (Docker → Artifact Registry → Cloud Run)
+        run: gcloud builds submit backend --config backend/cloudbuild.yaml
+
+  deploy-frontend:
+    name: 🌐 Deploy Frontend → Vercel
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+      VITE_ADMIN_KEY: ${{ secrets.VITE_ADMIN_KEY }}
+      VITE_CALENDLY_URL: ${{ secrets.VITE_CALENDLY_URL }}
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 📦 Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: 🏗️ Build frontend
+        run: npm run build
+        working-directory: frontend
+
+      - name: 🚀 Deploy to Vercel (production)
+        run: npx vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
