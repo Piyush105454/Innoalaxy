@@ -139,9 +139,6 @@ export function Home() {
         <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-[1fr_460px] gap-12 items-center">
           {/* Left copy */}
           <motion.div {...fadeUp(0)}>
-            <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wide">
-              AI Workflow Automation for Indian Teams
-            </p>
             <h1 className="font-['DM_Sans'] text-5xl md:text-6xl font-bold leading-[1.1] text-ink mb-6">
               Automate.{" "}
               <span className="text-primary">Optimize.</span>
