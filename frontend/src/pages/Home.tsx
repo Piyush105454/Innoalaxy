@@ -18,6 +18,10 @@ import {
   Building2,
   Rocket,
   Heart,
+  Code2,
+  GraduationCap,
+  Activity,
+  ExternalLink,
 } from "lucide-react";
 import { Navbar } from "../components/layout/Navbar";
 
@@ -126,6 +130,34 @@ const leadPipeline = [
   { label: "CRM: Create Contact", icon: "📋", active: true },
   { label: "Email: Send Welcome", icon: "📧", done: false },
   { label: "Slack: Notify Team", icon: "💬", done: false },
+];
+
+/* ─── past work / ai products ─── */
+const pastWork = [
+  {
+    icon: Code2,
+    title: "Resurrect AI Agent",
+    desc: "Autonomous AI agent integrated into dev teams. It monitors git pushes and summarizes daily code updates so every member knows exactly what was built and changed.",
+    stats: "20+ Dev hours saved weekly",
+    color: "text-blue-600 bg-blue-50 border-blue-200",
+    link: "#",
+  },
+  {
+    icon: GraduationCap,
+    title: "School AI Platform",
+    desc: "AI-powered facial recognition attendance. Provides personalized feedback, attendance scores, and data-driven guidance to help students grow and improve.",
+    stats: "99% Attendance accuracy",
+    color: "text-violet-600 bg-violet-50 border-violet-200",
+    link: "#",
+  },
+  {
+    icon: Activity,
+    title: "Medicine Shop AI",
+    desc: "Intelligent medical stock management. Predicts stock expiry, analyzes monthly profit/loss, and guides owners on exactly what inventory needs restocking.",
+    stats: "30% Reduction in expired stock",
+    color: "text-emerald-600 bg-emerald-50 border-emerald-200",
+    link: "#",
+  },
 ];
 
 /* ─────────────────────── Component ─────────────────────── */
@@ -434,6 +466,57 @@ export function Home() {
                 ))}
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 3.5 — Past AI Platforms ── */}
+      <section className="py-20 bg-white" id="past-work">
+        <div className="mx-auto max-w-7xl px-6">
+          <motion.div {...fadeUp(0)} className="text-center mb-16">
+            <h2 className="font-['DM_Sans'] text-4xl md:text-5xl font-bold text-ink mb-4">
+              Our Past <span className="text-primary">AI Products</span>
+            </h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+              We don't just audit. We build real, integrated AI solutions that solve complex, industry-specific challenges.
+            </p>
+          </motion.div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {pastWork.map((work, i) => (
+              <motion.div
+                key={work.title}
+                {...fadeUp(0.1 + i * 0.1)}
+                className="group relative flex flex-col rounded-2xl border border-gray-200 bg-white p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              >
+                <div className={`absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl ${work.color.split(" ")[1]}`} />
+                <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${work.color}`}>
+                  <work.icon size={28} />
+                </div>
+                
+                <h3 className="font-['DM_Sans'] text-2xl font-bold text-ink mb-3">{work.title}</h3>
+                <p className="text-slate-600 leading-relaxed mb-6 flex-1">
+                  {work.desc}
+                </p>
+                
+                <div className="mb-8 p-4 rounded-lg bg-[#F4F6F9] border border-gray-100 flex items-start gap-3">
+                  <TrendingUp className="text-primary shrink-0 mt-0.5" size={18} />
+                  <div>
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Achievement</p>
+                    <p className="text-sm font-bold text-ink">{work.stats}</p>
+                  </div>
+                </div>
+
+                <a
+                  href={work.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl border border-gray-200 font-semibold text-ink hover:border-primary hover:text-primary hover:bg-blue-50 transition-all"
+                >
+                  View Platform <ExternalLink size={16} />
+                </a>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

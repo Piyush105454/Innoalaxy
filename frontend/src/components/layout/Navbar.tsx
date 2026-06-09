@@ -18,6 +18,7 @@ export function Navbar() {
 
   const navLinks = [
     { label: "Solutions", href: "#solutions" },
+    { label: "Past AI Platforms", href: "#past-work" },
     { label: "Industries", href: "#industries" },
     { label: "ROI", href: "#pricing" },
     { label: "Contact", href: "#contact" },
