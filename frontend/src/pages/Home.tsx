@@ -22,6 +22,7 @@ import {
   GraduationCap,
   Activity,
   ExternalLink,
+  PlayCircle,
 } from "lucide-react";
 import { Navbar } from "../components/layout/Navbar";
 
@@ -140,7 +141,8 @@ const pastWork = [
     desc: "Autonomous AI agent integrated into dev teams. It monitors git pushes and summarizes daily code updates so every member knows exactly what was built and changed.",
     stats: "Automated Git Summaries & Standups",
     color: "text-blue-600 bg-blue-50 border-blue-200",
-    link: "#",
+    link: "https://resurrect-code.vercel.app/",
+    video: "https://youtu.be/0xny8WORHz4?si=5HwB-PNbRMMNG-LU",
   },
   {
     icon: GraduationCap,
@@ -148,7 +150,7 @@ const pastWork = [
     desc: "AI-powered facial recognition attendance. Provides personalized feedback, attendance scores, and data-driven guidance to help students grow and improve.",
     stats: "Facial Attendance & Growth Reports",
     color: "text-violet-600 bg-violet-50 border-violet-200",
-    link: "#",
+    link: "https://school-management-six-iota.vercel.app",
   },
   {
     icon: Activity,
@@ -156,7 +158,7 @@ const pastWork = [
     desc: "Intelligent medical stock management. Predicts stock expiry, analyzes monthly profit/loss, and guides owners on exactly what inventory needs restocking.",
     stats: "Expiry Alerts & Restock Predictions",
     color: "text-emerald-600 bg-emerald-50 border-emerald-200",
-    link: "#",
+    link: "https://pharmacy-pro-rho.vercel.app/",
   },
 ];
 
@@ -507,14 +509,27 @@ export function Home() {
                   </div>
                 </div>
 
-                <a
-                  href={work.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl border border-gray-200 font-semibold text-ink hover:border-primary hover:text-primary hover:bg-blue-50 transition-all"
-                >
-                  View Platform <ExternalLink size={16} />
-                </a>
+                <div className="flex gap-2 w-full">
+                  <a
+                    href={work.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 font-semibold text-ink hover:border-primary hover:text-primary hover:bg-blue-50 transition-all text-sm"
+                  >
+                    View Platform <ExternalLink size={16} />
+                  </a>
+                  {work.video && (
+                    <a
+                      href={work.video}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 font-semibold text-red-600 hover:border-red-600 hover:bg-red-50 transition-all text-sm shrink-0"
+                      title="Watch Demo Video"
+                    >
+                      <PlayCircle size={18} />
+                    </a>
+                  )}
+                </div>
               </motion.div>
             ))}
           </div>
