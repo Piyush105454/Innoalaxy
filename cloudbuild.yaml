@@ -1,14 +1,9 @@
-substitutions:
-  _REGION: asia-south2
-  _SERVICE: innoalaxy
-  _REPOSITORY: innoalaxy
-
 steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - build
       - -t
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+      - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
       - -f
       - backend/Dockerfile
       - backend/
@@ -16,16 +11,16 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       - push
-      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+      - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
 
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
       - run
       - deploy
-      - ${_SERVICE}
-      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
-      - --region=${_REGION}
+      - ${_SERVICE_NAME}
+      - --image=${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
+      - --region=${_DEPLOY_REGION}
       - --platform=managed
       - --allow-unauthenticated
       - --memory=1Gi
@@ -36,4 +31,4 @@ steps:
       - --set-secrets=DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=GEMINI_API_KEY:latest,INNOALAXY_ADMIN_KEY=INNOALAXY_ADMIN_KEY:latest,FRONTEND_URL=FRONTEND_URL:latest,TWILIO_ACCOUNT_SID=TWILIO_ACCOUNT_SID:latest,TWILIO_AUTH_TOKEN=TWILIO_AUTH_TOKEN:latest,PIYUSH_WHATSAPP_NUMBER=PIYUSH_WHATSAPP_NUMBER:latest
 
 images:
-  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_SERVICE}:$COMMIT_SHA
+  - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
