@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     environment: str = "development"
     database_url: str = Field(default="postgresql+psycopg://postgres:postgres@localhost:5432/innoalaxy")
     gemini_api_key: str | None = None
+    @property
+    def clean_groq_key(self):
+        return self.groq_api_key.strip() if self.groq_api_key else None
     gemini_model: str = "gemini-1.5-pro"
     groq_api_key: str | None = None
     groq_model: str = "llama-3.3-70b-versatile"

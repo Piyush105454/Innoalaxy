@@ -41,18 +41,20 @@ _RETRYABLE = (ResourceExhausted, ServiceUnavailable, ConnectionError, TimeoutErr
 class GeminiService:
     def __init__(self) -> None:
         self.settings = get_settings()
-        self.enabled = bool(self.settings.gemini_api_key and genai)
+        gemini_key = self.settings.gemini_api_key.strip() if self.settings.gemini_api_key else None
+        self.enabled = bool(gemini_key and genai)
         if self.enabled:
-            genai.configure(api_key=self.settings.gemini_api_key)
+            genai.configure(api_key=gemini_key)
             self.model = genai.GenerativeModel(self.settings.gemini_model)
             logger.info("GeminiService ready — model=%s", self.settings.gemini_model)
         else:
             self.model = None
             logger.warning("GeminiService: no API key — running in demo/fallback mode")
 
-        self.groq_enabled = bool(self.settings.groq_api_key and groq)
+        groq_key = self.settings.groq_api_key.strip() if self.settings.groq_api_key else None
+        self.groq_enabled = bool(groq_key and groq)
         if self.groq_enabled:
-            self.groq_client = groq.Groq(api_key=self.settings.groq_api_key)
+            self.groq_client = groq.Groq(api_key=groq_key)
             self.groq_model = self.settings.groq_model
             logger.info("Groq fallback ready — model=%s", self.groq_model)
         else:
@@ -121,11 +123,12 @@ class GeminiService:
         elif not raw:
             raise last_exc
 
-        # Strip markdown fences (```json ... ``` or ``` ... ```)
+        # Extract just the JSON object to ignore markdown or conversational prefixes
         raw = raw.strip()
-        raw = re.sub(r"^```[a-zA-Z]*\n?", "", raw)
-        raw = re.sub(r"\n?```$", "", raw)
-        raw = raw.strip()
+        if "{" in raw and "}" in raw:
+            start = raw.find("{")
+            end = raw.rfind("}") + 1
+            raw = raw[start:end]
 
         try:
             return json.loads(raw)
