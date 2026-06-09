@@ -37,3 +37,11 @@ def update_submission(submission_id: UUID, request: StatusUpdate, db: Session = 
         raise HTTPException(status_code=404, detail="Submission not found")
     return APIResponse(data=result, message="Submission updated")
 
+
+@router.delete("/{submission_id}", response_model=APIResponse[None])
+def delete_submission(submission_id: UUID, db: Session = Depends(get_db)) -> APIResponse[None]:
+    success = AuditService(db).delete_submission(submission_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return APIResponse(data=None, message="Submission deleted")
+

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
-import { getSubmission, listSubmissions, updateSubmission } from "../lib/api";
+import { getSubmission, listSubmissions, updateSubmission, deleteSubmission } from "../lib/api";
 import type { SubmissionDetail, SubmissionSummary } from "../lib/types";
 import { Button } from "../components/ui/Button";
 
@@ -8,6 +8,10 @@ export function DashboardPage() {
   const [rows, setRows] = useState<SubmissionSummary[]>([]);
   const [selected, setSelected] = useState<SubmissionDetail | null>(null);
   const [query, setQuery] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
 
   async function load() {
     const data = await listSubmissions();
@@ -15,7 +19,11 @@ export function DashboardPage() {
     if (!selected && data[0]) setSelected(await getSubmission(data[0].id));
   }
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => { 
+    if (isAuthenticated) {
+      void load(); 
+    }
+  }, [isAuthenticated]);
 
   const filtered = useMemo(() => rows.filter((row) => row.business_name.toLowerCase().includes(query.toLowerCase()) || row.industry.toLowerCase().includes(query.toLowerCase())), [rows, query]);
   const totalHours = rows.reduce((sum, row) => sum + (row.hours_wasted_weekly ?? 0), 0);
@@ -26,6 +34,46 @@ export function DashboardPage() {
     const updated = await updateSubmission(selected.id, status, selected.internal_notes);
     setSelected(updated);
     await load();
+  }
+
+  async function handleDelete() {
+    if (!selected) return;
+    if (!confirm("Are you sure you want to delete this submission?")) return;
+    await deleteSubmission(selected.id);
+    setSelected(null);
+    await load();
+  }
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (email === "piyushmodi812@gmail.com" && password === "codepagalu") {
+      setIsAuthenticated(true);
+      setAuthError("");
+    } else {
+      setAuthError("Invalid credentials");
+    }
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+        <form onSubmit={handleLogin} className="w-full max-w-sm rounded-lg border border-line bg-white p-8 shadow-sm">
+          <h1 className="text-center font-['DM_Sans'] text-2xl font-bold text-ink">Admin Login</h1>
+          {authError && <p className="mt-4 text-center text-sm text-red-600">{authError}</p>}
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full rounded border border-line px-3 py-2 outline-none focus:border-slate-400" />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full rounded border border-line px-3 py-2 outline-none focus:border-slate-400" />
+            </div>
+            <Button type="submit" className="w-full justify-center">Login</Button>
+          </div>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -62,6 +110,7 @@ export function DashboardPage() {
                 <textarea className="mt-5 min-h-24 w-full rounded-md border border-line p-3 text-sm" value={selected.internal_notes} onChange={(e) => setSelected({ ...selected, internal_notes: e.target.value })} placeholder="Internal notes" />
                 <div className="mt-4 flex flex-wrap gap-2">
                   {["reviewed", "building", "delivered"].map((status) => <Button key={status} onClick={() => setStatus(status)}><Check size={15} /> {status}</Button>)}
+                  <button onClick={handleDelete} className="ml-auto rounded border border-red-200 bg-red-50 px-3 py-1.5 text-sm font-semibold text-red-600 hover:bg-red-100">Delete</button>
                 </div>
               </>
             ) : <p className="text-slate-500">No submission selected.</p>}

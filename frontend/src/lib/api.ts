@@ -57,3 +57,10 @@ export function updateSubmission(id: string, status: string, notes?: string): Pr
     body: JSON.stringify({ status, notes })
   });
 }
+
+export function deleteSubmission(id: string): Promise<void> {
+  return request<void>(`/submissions/${id}`, {
+    method: "DELETE",
+    headers: { "X-Admin-Key": ADMIN_KEY }
+  });
+}

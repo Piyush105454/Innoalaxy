@@ -110,3 +110,11 @@ class AuditService:
         self.db.commit()
         return self.get_submission(submission_id)
 
+    def delete_submission(self, submission_id: UUID) -> bool:
+        row = self.db.get(Submission, submission_id)
+        if not row:
+            return False
+        self.db.delete(row)
+        self.db.commit()
+        return True
+
