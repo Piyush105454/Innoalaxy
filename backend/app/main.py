@@ -19,6 +19,8 @@ app.add_middleware(
         "http://localhost:5173",
         "https://innoalaxy.vercel.app",
         "https://innoalaxy-delta.vercel.app",
+        "https://innoalaxy.in",
+        "https://www.innoalaxy.in",
     ],
     allow_origin_regex=r"https://innoalaxy-.*\.vercel\.app",
     allow_credentials=True,
