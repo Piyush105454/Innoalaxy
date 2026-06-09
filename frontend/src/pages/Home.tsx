@@ -182,7 +182,7 @@ export function Home() {
               Scale.
             </h1>
             <p className="text-lg text-slate-700 leading-relaxed max-w-lg mb-4">
-              <strong className="text-ink">We find where your business wastes time.</strong> We build the AI and custom software that eliminates it.
+              <strong className="text-ink">Built by our expert team members.</strong> We find where your business wastes time, and we build the AI and custom software that eliminates it.
             </p>
             
             {/* Core Value Props including custom software */}
@@ -593,85 +593,36 @@ export function Home() {
         </div>
       </section>
 
-      {/* ── SECTION 6 — Pricing ── */}
+      {/* ── SECTION 6 — Pricing / Custom Build ── */}
       <section className="py-20 bg-white" id="pricing">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeUp(0)} className="text-center mb-12">
             <h2 className="font-['DM_Sans'] text-4xl font-bold text-ink mb-3">
-              Simple, <span className="text-primary">Transparent Pricing</span>
+              Custom AI <span className="text-primary">Platform Development</span>
             </h2>
-            <p className="text-slate-500">No hidden fees. Pay only for what you need.</p>
+            <p className="text-slate-500">Charges are based on your AI-powered platform needs and what level of AI agent platform you require.</p>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {[
-              {
-                name: "Free Audit",
-                price: "₹0",
-                sub: "Always free",
-                desc: "AI scans your workflow and surfaces automation opportunities in minutes.",
-                features: ["Workflow analysis", "Pain point report", "Automation score", "Blueprint preview"],
-                cta: "Start Free Audit",
-                href: "/audit",
-                highlight: false,
-              },
-              {
-                name: "Agent Build",
-                price: "₹25k – ₹1.5L",
-                sub: "One-time build",
-                desc: "Custom AI agent designed and shipped for your exact business process.",
-                features: ["End-to-end build", "Gemini + Google ADK", "WhatsApp integration", "Full testing & handoff"],
-                cta: "Get a Quote",
-                href: "#contact",
-                highlight: true,
-              },
-              {
-                name: "Monthly Support",
-                price: "₹5k – ₹25k",
-                sub: "Per month",
-                desc: "Ongoing maintenance, improvements, and monitoring of your AI agents.",
-                features: ["Agent monitoring", "Bug fixes & updates", "Performance tuning", "Priority support"],
-                cta: "Talk to Us",
-                href: "#contact",
-                highlight: false,
-              },
-            ].map((plan, i) => (
-              <motion.div key={plan.name} {...fadeUp(i * 0.1)}
-                className={`rounded-2xl border p-7 flex flex-col ${
-                  plan.highlight
-                    ? "border-primary bg-primary text-white shadow-xl shadow-blue-200 scale-105"
-                    : "border-gray-200 bg-[#F4F6F9]"
-                }`}
-              >
-                <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${plan.highlight ? "text-blue-100" : "text-primary"}`}>
-                  {plan.name}
-                </p>
-                <p className={`font-['DM_Sans'] text-3xl font-black mb-0.5 ${plan.highlight ? "text-white" : "text-ink"}`}>
-                  {plan.price}
-                </p>
-                <p className={`text-xs mb-4 ${plan.highlight ? "text-blue-200" : "text-slate-400"}`}>{plan.sub}</p>
-                <p className={`text-sm leading-relaxed mb-6 ${plan.highlight ? "text-blue-100" : "text-slate-500"}`}>
-                  {plan.desc}
-                </p>
-                <ul className="space-y-2 mb-8 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className={`flex items-center gap-2 text-sm ${plan.highlight ? "text-blue-50" : "text-slate-600"}`}>
-                      <CheckCircle2 size={14} className={plan.highlight ? "text-blue-200" : "text-primary"} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={plan.href}
-                  className={`block text-center rounded-lg px-5 py-2.5 text-sm font-semibold transition-all ${
-                    plan.highlight
-                      ? "bg-white text-primary hover:bg-blue-50"
-                      : "bg-primary text-white hover:bg-blue-700"
-                  }`}
-                >
-                  {plan.cta}
-                </a>
-              </motion.div>
-            ))}
+          <div className="max-w-3xl mx-auto rounded-2xl border border-primary bg-primary text-white shadow-xl shadow-blue-200 p-8 text-center relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full bg-white/5 blur-[50px] pointer-events-none" />
+            <h3 className="font-['DM_Sans'] text-3xl font-black mb-4">Let's Build Your Custom Agent</h3>
+            <p className="text-blue-100 mb-8 max-w-xl mx-auto leading-relaxed">
+              Direct in touch for our team to build your custom AI agent or software. Whether it's an end-to-end integration or a simple automation, we tailor the solution and pricing to your exact business workflow.
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
+              {["Google ADK", "MySQL", "MongoDB", "Python"].map((tech) => (
+                <span key={tech} className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-sm font-semibold tracking-wide">
+                  {tech}
+                </span>
+              ))}
+            </div>
+
+            <div className="inline-block bg-white text-ink rounded-xl p-5 mb-4 w-full sm:w-auto shadow-sm">
+              <p className="text-sm text-slate-500 font-semibold uppercase tracking-wider mb-1">Email Us Directly</p>
+              <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-['DM_Sans'] text-xl font-bold text-primary hover:underline">
+                piyush.tamoli@innoalaxy.in
+              </a>
+            </div>
           </div>
         </div>
       </section>

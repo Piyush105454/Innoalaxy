@@ -124,7 +124,7 @@ export function AuditPage() {
             <p className="mt-2 text-slate-600">{store.auditResult.industry_context}</p>
             <div className="mt-6 space-y-3">{store.auditResult.blueprint.steps.map((s, i) => <div key={s.title} className="rounded-md border border-line p-4"><p className="text-sm font-semibold text-primary">Step {i + 1} · {s.tool}</p><h3 className="mt-1 font-semibold">{s.title}</h3><p className="mt-1 text-sm text-slate-600">{s.description}</p></div>)}</div>
             <div className="mt-6 rounded-md border border-line bg-slate-50 p-4">
-              <p className="font-semibold">{store.auditResult.blueprint.build_time_weeks} week build · {store.auditResult.blueprint.hours_saved_weekly} hrs saved weekly · {store.auditResult.blueprint.price_range}</p>
+              <p className="font-semibold">{store.auditResult.blueprint.build_time_weeks} week build · {store.auditResult.blueprint.hours_saved_weekly} hrs saved weekly</p>
               <div className="mt-3 flex flex-wrap gap-2">{store.auditResult.blueprint.integrations.map((x) => <span key={x} className="rounded border border-line bg-white px-2 py-1 text-sm">{x}</span>)}</div>
             </div>
             <div className="mt-6 rounded-md border border-primary bg-blue-50 p-4 text-sm text-blue-900">
