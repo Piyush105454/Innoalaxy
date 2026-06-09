@@ -23,6 +23,11 @@ except ImportError:
     ResourceExhausted = Exception
     ServiceUnavailable = Exception
 
+try:
+    import groq
+except ImportError:
+    groq = None
+
 from app.core.config import get_settings
 from app.models.schemas import AuditResult, BlueprintResult
 from app.prompts.audit_prompt import build_audit_prompt
@@ -44,6 +49,14 @@ class GeminiService:
         else:
             self.model = None
             logger.warning("GeminiService: no API key — running in demo/fallback mode")
+
+        self.groq_enabled = bool(self.settings.groq_api_key and groq)
+        if self.groq_enabled:
+            self.groq_client = groq.Groq(api_key=self.settings.groq_api_key)
+            self.groq_model = self.settings.groq_model
+            logger.info("Groq fallback ready — model=%s", self.groq_model)
+        else:
+            self.groq_client = None
 
     # ── internal helpers ────────────────────────────────────────────────────
 
@@ -80,11 +93,33 @@ class GeminiService:
         raise last_exc  # type: ignore[misc]
 
     def _generate_json(self, prompt: str) -> dict[str, Any]:
-        """Call Gemini and parse its text output as JSON."""
-        if not self.model:
-            raise RuntimeError("Gemini model not configured")
-
-        raw = self._call_with_retry(prompt)
+        """Call Gemini and parse its text output as JSON. Falls back to Groq if configured."""
+        raw = None
+        last_exc = None
+        
+        if self.model:
+            try:
+                raw = self._call_with_retry(prompt)
+            except Exception as exc:
+                logger.warning("Gemini completely failed: %s", exc)
+                last_exc = exc
+        else:
+            last_exc = RuntimeError("Gemini model not configured")
+            
+        if not raw and self.groq_enabled:
+            logger.info("Falling back to Groq...")
+            try:
+                response = self.groq_client.chat.completions.create(
+                    messages=[{"role": "user", "content": prompt}],
+                    model=self.groq_model,
+                    temperature=0.2,
+                )
+                raw = response.choices[0].message.content
+            except Exception as exc:
+                logger.error("Groq fallback failed: %s", exc)
+                raise exc if not last_exc else last_exc
+        elif not raw:
+            raise last_exc
 
         # Strip markdown fences (```json ... ``` or ``` ... ```)
         raw = raw.strip()

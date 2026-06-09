@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     database_url: str = Field(default="postgresql+psycopg://postgres:postgres@localhost:5432/innoalaxy")
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-1.5-pro"
+    groq_api_key: str | None = None
+    groq_model: str = "llama-3.3-70b-versatile"
     innoalaxy_admin_key: str = "change-me"
     frontend_url: str = "http://localhost:5173"
     dashboard_url: str = "http://localhost:5173/dashboard"
