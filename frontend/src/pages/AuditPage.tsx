@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, CheckCircle, FileText, Play, RotateCcw, Upload } from "lucide-react";
+import { ArrowRight, MessageCircle, CheckCircle, FileText, Play, RotateCcw, Upload } from "lucide-react";
 import { analyzeProcess, getAgentStatus, runAgentDemo } from "../lib/api";
 import { useAuditStore } from "../store/auditStore";
 import { Navbar } from "../components/layout/Navbar";
@@ -148,7 +148,7 @@ export function AuditPage() {
               <p>Email: <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-bold underline">piyush.tamoli@innoalaxy.in</a></p>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
-              <a href={import.meta.env.VITE_CALENDLY_URL ?? "#"}><Button><Calendar size={16} /> Book a free call</Button></a>
+              <a href="https://wa.me/917509893717?text=Hello%20Innoalaxy%20team!%20I%20just%20completed%20the%20AI%20audit%20for%20my%20startup%20and%20I%27m%20interested%20in%20building%20a%20custom%20AI%20agent%20or%20software." target="_blank" rel="noopener noreferrer"><Button><MessageCircle size={16} /> Chat on WhatsApp</Button></a>
               <Button className="border-line bg-white text-ink" onClick={store.reset}><RotateCcw size={16} /> Start over</Button>
             </div>
           </motion.section>
