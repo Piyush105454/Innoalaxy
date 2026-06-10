@@ -33,7 +33,18 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2.5 group">
-          <img src="/logo.png" alt="Innoalaxy Logo" className="w-8 h-8 rounded-md object-contain bg-ink" />
+          <img 
+            src="/logo.png" 
+            alt="Innoalaxy Logo" 
+            className="w-8 h-8 rounded-md object-contain bg-ink"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement?.querySelector('.fallback-logo')?.classList.remove('hidden');
+            }}
+          />
+          <div className="fallback-logo hidden w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
+            <span className="text-white font-bold text-sm">IA</span>
+          </div>
           <span className="font-['DM_Sans'] text-xl font-bold text-ink tracking-tight">
             Innoalaxy
           </span>
