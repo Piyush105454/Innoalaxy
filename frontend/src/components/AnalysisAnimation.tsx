@@ -67,19 +67,7 @@ export function AnalysisAnimation() {
                   animate={{ pathLength: 1, opacity: 0.5 }}
                   transition={{ duration: 1, delay: delay + 0.5 }}
                 />
-                <motion.circle
-                  cx="50%"
-                  cy="50%"
-                  r="3"
-                  fill="#2563eb"
-                  initial={{ opacity: 0, x: 0, y: 0 }}
-                  animate={{ 
-                    opacity: [0, 1, 0],
-                    x: [0, x],
-                    y: [0, y]
-                  }}
-                  transition={{ duration: 1.5, repeat: Infinity, delay: delay + 1 }}
-                />
+
               </svg>
 
               {/* Node Icon */}
