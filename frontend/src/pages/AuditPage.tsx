@@ -6,6 +6,8 @@ import { useAuditStore } from "../store/auditStore";
 import { Navbar } from "../components/layout/Navbar";
 import { Button } from "../components/ui/Button";
 import { AnalysisAnimation } from "../components/AnalysisAnimation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const industries = ["B2B Manufacturing", "SaaS", "HR & Recruitment", "Real Estate", "Logistics", "Healthcare", "Education", "Retail", "Finance", "Professional Services"];
 const teamSizes = ["1-5", "6-15", "16-50", "51-200", "200+"];
@@ -143,7 +145,31 @@ export function AuditPage() {
             <div className="mt-6 min-h-72 rounded-lg bg-ink p-4 font-mono text-sm text-blue-100">
               {store.agentLogs.length === 0 ? <p className="text-slate-400">Integration and optimization logs will appear here.</p> : store.agentLogs.map((log) => <p key={`${log.timestamp}-${log.message}`}><span className="text-green-300">{new Date(log.timestamp).toLocaleTimeString()}</span> {log.message}</p>)}
             </div>
-            {store.agentOutput && <div className="mt-4 rounded-md border border-line p-4 whitespace-pre-line"><CheckCircle className="mb-2 inline-block mr-2 text-success" />{store.agentOutput}</div>}
+            {store.agentOutput && (
+              <div className="mt-8 rounded-lg border border-line bg-slate-50 p-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-4 pb-4 border-b border-slate-200">
+                  <CheckCircle className="text-success" size={24} />
+                  <h3 className="font-bold text-xl text-ink">Final Optimization Plan</h3>
+                </div>
+                <div className="text-sm">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h1: ({node, ...props}) => <h1 className="text-xl font-bold mt-6 mb-3 text-ink" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-lg font-bold mt-5 mb-2 text-ink" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-base font-bold mt-4 mb-2 text-ink" {...props} />,
+                      p: ({node, ...props}) => <p className="mb-4 text-slate-600 leading-relaxed" {...props} />,
+                      ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 text-slate-600 space-y-1" {...props} />,
+                      ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-4 text-slate-600 space-y-1" {...props} />,
+                      strong: ({node, ...props}) => <strong className="font-semibold text-ink" {...props} />,
+                      a: ({node, ...props}) => <a className="text-primary hover:underline" {...props} />
+                    }}
+                  >
+                    {store.agentOutput}
+                  </ReactMarkdown>
+                </div>
+              </div>
+            )}
             <div className="mt-6 rounded-md border border-primary bg-blue-50 p-4 text-sm text-blue-900">
               <p className="font-semibold mb-1">Direct in touch for team to build your custom AI agent or software.</p>
               <p>Email: <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-bold underline">piyush.tamoli@innoalaxy.in</a></p>
