@@ -33,9 +33,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
-            <div className="w-3 h-3 rounded-full bg-white" />
-          </div>
+          <img src="/logo.png" alt="Innoalaxy Logo" className="w-8 h-8 rounded-md object-contain bg-ink" />
           <span className="font-['DM_Sans'] text-xl font-bold text-ink tracking-tight">
             Innoalaxy
           </span>

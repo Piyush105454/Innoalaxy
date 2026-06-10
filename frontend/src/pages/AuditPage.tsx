@@ -5,6 +5,7 @@ import { analyzeProcess, getAgentStatus, runAgentDemo } from "../lib/api";
 import { useAuditStore } from "../store/auditStore";
 import { Navbar } from "../components/layout/Navbar";
 import { Button } from "../components/ui/Button";
+import { AnalysisAnimation } from "../components/AnalysisAnimation";
 
 const industries = ["B2B Manufacturing", "SaaS", "HR & Recruitment", "Real Estate", "Logistics", "Healthcare", "Education", "Retail", "Finance", "Professional Services"];
 const teamSizes = ["1-5", "6-15", "16-50", "51-200", "200+"];
@@ -101,7 +102,7 @@ export function AuditPage() {
         {store.currentStep === 2 && (
           <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg border border-line bg-white p-6">
             {store.loadingAudit || !store.auditResult ? (
-              <div className="py-20 text-center"><FileText className="mx-auto mb-4 text-primary" /><h1 className="font-['DM_Sans'] text-3xl font-bold">{loadingText}</h1><p className="mt-2 text-slate-600">This usually takes a few seconds.</p></div>
+              <AnalysisAnimation />
             ) : (
               <div>
                 <h1 className="font-['DM_Sans'] text-3xl font-bold">Your automation audit</h1>
