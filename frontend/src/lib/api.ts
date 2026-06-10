@@ -5,7 +5,7 @@ const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY ?? "change-me";
 
 async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 25000): Promise<T> {
   const controller = new AbortController();
-  const id = window.setTimeout(() => controller.abort(), timeoutMs);
+  const id = window.setTimeout(() => controller.abort(new Error("The AI is taking longer than expected to respond. Please try again.")), timeoutMs);
   try {
     const res = await fetch(`${API_BASE}${path}`, { ...options, signal: controller.signal });
     const json = await res.json().catch(() => ({}));
@@ -19,7 +19,8 @@ async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 2
 }
 
 export function analyzeProcess(formData: FormData): Promise<AuditResult> {
-  return request<AuditResult>("/audit/analyze", { method: "POST", body: formData }, 60000);
+  // Give the LLM up to 120 seconds to do the deep business audit
+  return request<AuditResult>("/audit/analyze", { method: "POST", body: formData }, 120000);
 }
 
 export function getAuditResult(submissionId: string): Promise<AuditResult> {
