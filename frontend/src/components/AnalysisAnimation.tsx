@@ -68,15 +68,15 @@ export function AnalysisAnimation() {
                   transition={{ duration: 1, delay: delay + 0.5 }}
                 />
                 <motion.circle
-                  cx={`calc(50% + ${x / 2}px)`}
-                  cy={`calc(50% + ${y / 2}px)`}
+                  cx="50%"
+                  cy="50%"
                   r="3"
                   fill="#2563eb"
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: 0, x: 0, y: 0 }}
                   animate={{ 
                     opacity: [0, 1, 0],
-                    cx: ["50%", `calc(50% + ${x}px)`],
-                    cy: ["50%", `calc(50% + ${y}px)`]
+                    x: [0, x],
+                    y: [0, y]
                   }}
                   transition={{ duration: 1.5, repeat: Infinity, delay: delay + 1 }}
                 />
