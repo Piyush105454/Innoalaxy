@@ -24,6 +24,7 @@ import {
   ExternalLink,
   PlayCircle,
   Video,
+  Search,
 } from "lucide-react";
 import { Navbar } from "../components/layout/Navbar";
 
@@ -186,35 +187,49 @@ export function Home() {
         <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
           {/* Left copy */}
           <motion.div {...fadeUp(0)}>
-            <h1 className="font-['DM_Sans'] text-5xl md:text-6xl font-bold leading-[1.05] text-ink mb-6">
-              Automate.{" "}
-              <span className="text-primary bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Optimize.</span>
-              <br />
-              Scale.
+            <h1 className="font-['DM_Sans'] text-4xl md:text-5xl lg:text-5xl font-bold leading-tight text-ink mb-5">
+              We Analyze Your Business. Then Build <span className="text-primary bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">AI That Optimizes It.</span>
             </h1>
-            <p className="text-lg text-slate-700 leading-relaxed max-w-lg mb-4">
-              <strong className="text-ink">Built by our expert team members.</strong> We find where your business wastes time, and we build the AI and custom software that eliminates it.
+            <p className="text-base md:text-lg text-slate-700 leading-relaxed max-w-xl mb-8">
+              From WhatsApp follow-ups to document processing and operations, we build AI systems that reduce manual work and help businesses scale smarter.
             </p>
             
-            {/* Core Value Props including custom software */}
-            <div className="space-y-3 mb-8 border-l-2 border-primary/20 pl-4">
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
-                <p className="text-sm text-slate-600 leading-normal">
-                  <strong className="text-ink font-semibold">AI-Powered Custom Software:</strong> Tailor-made business applications, sync portals, and custom CRM systems built by our expert engineering team.
-                </p>
+            {/* 3 Solution Cards */}
+            <div className="grid sm:grid-cols-3 gap-3 mb-8">
+              {/* Card 1 */}
+              <div className="rounded-xl border border-blue-100 bg-white shadow-sm p-4 hover:shadow-md transition-all">
+                <Search size={18} className="text-primary mb-2" />
+                <h3 className="font-bold text-[13px] text-ink mb-1 leading-tight">1. Workflow Analysis</h3>
+                <p className="text-[11px] font-semibold text-slate-500 mb-2 leading-tight">We find where your business loses time</p>
+                <ul className="space-y-1 text-[11px] text-slate-600">
+                  <li>• Manual operations</li>
+                  <li>• Repetitive workflows</li>
+                  <li>• Team inefficiencies</li>
+                </ul>
               </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
-                <p className="text-sm text-slate-600 leading-normal">
-                  <strong className="text-ink font-semibold">Intelligent AI Agents:</strong> Gemini & Google ADK agents running sales follow-ups, document extraction, and communication 24/7.
-                </p>
+              {/* Card 2 */}
+              <div className="rounded-xl border border-violet-100 bg-white shadow-sm p-4 hover:shadow-md transition-all">
+                <Brain size={18} className="text-violet-600 mb-2" />
+                <h3 className="font-bold text-[13px] text-ink mb-1 leading-tight">2. Custom AI Agents</h3>
+                <p className="text-[11px] font-semibold text-slate-500 mb-2 leading-tight">AI agents built for your business</p>
+                <ul className="space-y-1 text-[11px] text-slate-600">
+                  <li>• Lead follow-ups</li>
+                  <li>• Document extraction</li>
+                  <li>• Comm automation</li>
+                  <li>• Workflow orchestration</li>
+                </ul>
               </div>
-              <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={17} />
-                <p className="text-sm text-slate-600 leading-normal">
-                  <strong className="text-ink font-semibold">Free Workflow Audit:</strong> Identify manual spreadsheet bottlenecks and WhatsApp leaks in under 5 minutes.
-                </p>
+              {/* Card 3 */}
+              <div className="rounded-xl border border-emerald-100 bg-white shadow-sm p-4 hover:shadow-md transition-all">
+                <Code2 size={18} className="text-emerald-600 mb-2" />
+                <h3 className="font-bold text-[13px] text-ink mb-1 leading-tight">3. AI-Powered Software</h3>
+                <p className="text-[11px] font-semibold text-slate-500 mb-2 leading-tight">Custom systems integrated with your tools</p>
+                <ul className="space-y-1 text-[11px] text-slate-600">
+                  <li>• CRM integrations</li>
+                  <li>• WhatsApp automation</li>
+                  <li>• Internal dashboards</li>
+                  <li>• API & workflow sync</li>
+                </ul>
               </div>
             </div>
 
@@ -223,97 +238,77 @@ export function Home() {
                 href="/audit"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-200"
               >
-                Get Workflow Audit <ArrowRight size={16} />
+                Get Free Workflow Audit <ArrowRight size={16} />
               </a>
               <a
                 href="#solutions"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-ink hover:border-gray-300 transition-all"
               >
-                Explore Solutions
+                View Solutions
               </a>
             </div>
+            
+            {/* Trust line */}
+            <p className="mt-5 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <Zap size={14} className="text-amber-500" /> Built with Gemini • Google Cloud • Google ADK
+            </p>
           </motion.div>
 
-          {/* Right — Interactive Before (Manual) vs After (AI & Custom Software) Workspace */}
-          <motion.div {...fadeUp(0.15)} className="relative space-y-4 hidden lg:block">
+          {/* Right — Interactive Before vs After Workspace */}
+          <motion.div {...fadeUp(0.15)} className="relative flex-col items-center justify-center space-y-4 hidden lg:flex">
             
             {/* ⚠️ BEFORE: Manual Process Card */}
-            <div className="rounded-xl border border-red-100 bg-white/85 backdrop-blur-sm shadow-sm p-4 hover:shadow-md transition-all">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                  </div>
-                  <span className="text-xs text-slate-500 font-mono">manual_bottlenecks.log</span>
-                </div>
-                <span className="text-xs text-red-600 font-semibold flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded">
-                  ⚠️ 15+ Hours Wasted
-                </span>
+            <div className="w-full max-w-sm rounded-2xl border border-red-100 bg-white/80 backdrop-blur-sm shadow-lg p-6 hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex items-center justify-between mb-4 border-b border-red-50 pb-3">
+                <h3 className="font-['DM_Sans'] text-lg font-bold text-red-600 flex items-center gap-2">
+                  <AlertTriangle size={18} /> Before
+                </h3>
+                <span className="text-[10px] font-bold tracking-wider uppercase text-red-400 bg-red-50 px-2 py-1 rounded-full">Manual Chaos</span>
               </div>
-              <div className="space-y-1.5 text-xs text-slate-600">
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="flex items-center gap-1.5"><FileText size={12} className="text-slate-400" /> excel_leads_copy.xlsx</span>
-                  <span className="text-red-500 font-mono">Duplicate entry row 182</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-100 pb-1.5">
-                  <span className="flex items-center gap-1.5"><MessageSquare size={12} className="text-slate-400" /> manual_whatsapp_followup</span>
-                  <span className="text-amber-600 font-mono">Delayed by 14 hours</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="flex items-center gap-1.5"><Database size={12} className="text-slate-400" /> tally_invoice_entry</span>
-                  <span className="text-red-500 font-mono">Missing field amount</span>
-                </div>
-              </div>
+              <ul className="space-y-3">
+                <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                  <div className="w-6 h-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">❌</div>
+                  Manual spreadsheet
+                </li>
+                <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                  <div className="w-6 h-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">❌</div>
+                  Delayed follow-ups
+                </li>
+                <li className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                  <div className="w-6 h-6 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">❌</div>
+                  Missed leads
+                </li>
+              </ul>
+            </div>
+
+            {/* Down Arrow separator */}
+            <div className="w-10 h-10 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center text-slate-400">
+              ↓
             </div>
 
             {/* ✨ AFTER: Automated State Card */}
-            <div className="rounded-xl border border-emerald-100 bg-white shadow-xl p-5 hover:shadow-2xl transition-all relative">
-              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold shadow-md shadow-blue-200 z-10 animate-bounce">
-                🚀
+            <div className="w-full max-w-sm rounded-2xl border-2 border-emerald-400 bg-emerald-500 text-white shadow-xl shadow-emerald-200/50 p-6 hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden">
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl" />
+              <div className="flex items-center justify-between mb-4 border-b border-emerald-400/50 pb-3 relative z-10">
+                <h3 className="font-['DM_Sans'] text-lg font-bold flex items-center gap-2">
+                  <Rocket size={18} className="text-emerald-100" /> After
+                </h3>
+                <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-800 bg-emerald-300/80 px-2 py-1 rounded-full">Automated Scale</span>
               </div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1">
-                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  </div>
-                  <span className="text-xs text-slate-500 font-mono">automation_workspace.xlsx</span>
-                </div>
-                <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded">
-                  <Zap size={11} className="animate-spin" /> Live AI Engine
-                </span>
-              </div>
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-slate-400 border-b border-gray-100">
-                    <th className="text-left py-1.5 font-medium">Workflow</th>
-                    <th className="text-left py-1.5 font-medium">AI Agent Action</th>
-                    <th className="text-left py-1.5 font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { name: "Acme Leads", action: "Qualified & Assigned", status: "Synced" },
-                    { name: "WhatsApp Follow-up", action: "Auto-Sent in 2 mins", status: "Active" },
-                    { name: "Tally Integration", action: "Auto-Synced to DB", status: "Synced" },
-                  ].map((row) => (
-                    <tr key={row.name} className="border-b border-gray-50">
-                      <td className="py-1.5 font-medium text-ink">{row.name}</td>
-                      <td className="py-1.5 text-slate-500">{row.action}</td>
-                      <td className="py-1.5 text-emerald-600 font-semibold flex items-center gap-1">
-                        <CheckCircle2 size={10} /> {row.status}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="flex justify-between items-center mt-3 pt-2 border-t border-slate-50">
-                <p className="text-[10px] text-slate-400">Custom software sync pipeline ● Connected</p>
-                <span className="text-[10px] text-primary font-bold">100% Accuracy</span>
-              </div>
+              <ul className="space-y-3 relative z-10">
+                <li className="flex items-center gap-3 text-sm font-semibold">
+                  <div className="w-6 h-6 rounded-full bg-white text-emerald-600 flex items-center justify-center shrink-0">✅</div>
+                  AI Agent Active
+                </li>
+                <li className="flex items-center gap-3 text-sm font-semibold">
+                  <div className="w-6 h-6 rounded-full bg-white text-emerald-600 flex items-center justify-center shrink-0">✅</div>
+                  Auto Follow-ups
+                </li>
+                <li className="flex items-center gap-3 text-sm font-semibold">
+                  <div className="w-6 h-6 rounded-full bg-white text-emerald-600 flex items-center justify-center shrink-0">✅</div>
+                  Synced Workflows
+                </li>
+              </ul>
             </div>
 
           </motion.div>
