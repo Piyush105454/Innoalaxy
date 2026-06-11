@@ -248,10 +248,6 @@ export function Home() {
               </a>
             </div>
             
-            {/* Trust line */}
-            <p className="mt-5 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
-              <Zap size={14} className="text-amber-500" /> Built with Gemini • Google Cloud • Google ADK
-            </p>
           </motion.div>
 
           {/* Right — Interactive Before vs After Workspace */}
