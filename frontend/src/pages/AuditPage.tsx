@@ -5,7 +5,7 @@ import { analyzeProcess, getAgentStatus, runAgentDemo } from "../lib/api";
 import { useAuditStore } from "../store/auditStore";
 import { Navbar } from "../components/layout/Navbar";
 import { Button } from "../components/ui/Button";
-import { AnalysisAnimation } from "../components/AnalysisAnimation";
+import { DeepResearchTree } from "../components/DeepResearchTree";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -104,7 +104,7 @@ export function AuditPage() {
         {store.currentStep === 2 && (
           <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg border border-line bg-white p-6">
             {store.loadingAudit || !store.auditResult ? (
-              <AnalysisAnimation />
+              <DeepResearchTree />
             ) : (
               <div>
                 <h1 className="font-['DM_Sans'] text-3xl font-bold">Your automation audit</h1>

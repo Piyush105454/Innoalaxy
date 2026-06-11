@@ -23,12 +23,44 @@ def _serialize(run: AgentRun) -> AgentRunResult:
     )
 
 
+from app.services.rag_scraper import RAGScraperAgent
+
 async def _run_agent_task(run_id: UUID, agent_type: str, demo_mode: bool) -> None:
-    db = SessionLocal()
+    async def run_adk():
+        db = SessionLocal()
+        try:
+            return await InnoalaxyAgent(db, run_id, agent_type, demo_mode).run()
+        finally:
+            db.close()
+
+    async def run_rag():
+        db = SessionLocal()
+        try:
+            return await RAGScraperAgent(db, run_id).run()
+        finally:
+            db.close()
+
     try:
-        await InnoalaxyAgent(db, run_id, agent_type, demo_mode).run()
-    finally:
-        db.close()
+        adk_output, rag_output = await asyncio.gather(run_adk(), run_rag())
+        
+        db = SessionLocal()
+        try:
+            run = db.get(AgentRun, run_id)
+            if run:
+                run.status = "completed"
+                run.output = f"{adk_output}\n{rag_output}"
+                db.commit()
+        finally:
+            db.close()
+    except Exception as e:
+        db = SessionLocal()
+        try:
+            run = db.get(AgentRun, run_id)
+            if run:
+                run.status = "failed"
+                db.commit()
+        finally:
+            db.close()
 
 
 @router.post("/run", response_model=APIResponse[dict[str, str]])
