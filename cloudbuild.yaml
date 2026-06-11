@@ -28,7 +28,7 @@ steps:
       - --min-instances=0
       - --max-instances=10
       - --set-env-vars=ENVIRONMENT=production,GEMINI_MODEL=gemini-2.5-flash,WHATSAPP_DEMO_MODE=true,TWILIO_WHATSAPP_FROM=whatsapp:+14155238886,DASHBOARD_URL=https://innoalaxy-delta.vercel.app/dashboard
-      - --set-secrets=DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=GEMINI_API_KEY:latest,GROQ_API_KEY=GROQ_API_KEY:latest,INNOALAXY_ADMIN_KEY=INNOALAXY_ADMIN_KEY:latest,FRONTEND_URL=FRONTEND_URL:latest
+      - --set-secrets=DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=GEMINI_API_KEY:latest,GROQ_API_KEY=GROQ_API_KEY:latest,INNOALAXY_ADMIN_KEY=INNOALAXY_ADMIN_KEY:latest,FRONTEND_URL=FRONTEND_URL:latest,GEMINI_API_KEY_2=GEMINI_API_KEY_2:latest,GROQ_API_KEY_2=GROQ_API_KEY_2:latest
 
 images:
   - ${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:$COMMIT_SHA
