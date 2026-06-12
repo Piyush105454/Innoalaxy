@@ -111,7 +111,6 @@ export function DashboardPage() {
                     <th className="p-4 font-semibold">Business</th>
                     <th className="p-4 font-semibold">Industry</th>
                     <th className="p-4 font-semibold">AI Score</th>
-                    <th className="p-4 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -120,11 +119,6 @@ export function DashboardPage() {
                       <td className="p-4 font-bold text-ink">{row.business_name}</td>
                       <td className="p-4 text-slate-600">{row.industry}</td>
                       <td className="p-4 font-semibold text-primary">{row.automation_score ?? "-"}%</td>
-                      <td className="p-4">
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${row.status === 'delivered' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                          {row.status}
-                        </span>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
