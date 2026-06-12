@@ -1,7 +1,10 @@
 import { ReactNode } from "react";
-import { UserButton } from "@clerk/clerk-react";
+import { UserButton, useUser } from "@clerk/clerk-react";
 
-export function DashboardLayout({ children, activePath }: { children: ReactNode; activePath: "/dashboard" | "/audit" }) {
+export function DashboardLayout({ children, activePath }: { children: ReactNode; activePath: "/dashboard" | "/audit" | "/admin" }) {
+  const { user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "piyush.tamoli@innoalaxy.in";
+
   return (
     <div className="flex min-h-screen bg-slate-50 text-ink">
       <aside className="hidden w-64 flex-shrink-0 flex-col border-r border-line bg-white p-5 md:flex">
@@ -19,6 +22,14 @@ export function DashboardLayout({ children, activePath }: { children: ReactNode;
           >
             Audit Flow
           </a>
+          {isAdmin && (
+            <a 
+              className={`block rounded px-3 py-2 mt-4 ${activePath === "/admin" ? "bg-rose-50 text-rose-700 font-bold" : "text-slate-600 hover:bg-slate-50"}`} 
+              href="/admin"
+            >
+              Admin Controls
+            </a>
+          )}
         </nav>
         <div className="mt-auto border-t border-line pt-4 flex items-center gap-3">
           <UserButton />

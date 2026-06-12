@@ -76,12 +76,14 @@ class AuditService:
         summaries = []
         for row in rows:
             audit = row.audit_result
+            email = row.contacts[0].email if row.contacts and len(row.contacts) > 0 else None
             summaries.append(SubmissionSummary(
                 id=row.id,
                 business_name=row.business_name,
                 industry=row.industry,
                 team_size=row.team_size,
                 status=row.status,
+                email=email,
                 automation_score=audit.automation_score if audit else None,
                 hours_wasted_weekly=audit.hours_wasted_weekly if audit else None,
                 created_at=row.created_at,

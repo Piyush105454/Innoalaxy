@@ -56,6 +56,7 @@ export interface SubmissionSummary {
   industry: string;
   team_size: string;
   status: string;
+  email?: string;
   automation_score: number | null;
   hours_wasted_weekly: number | null;
   created_at: string;

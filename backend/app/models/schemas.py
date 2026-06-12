@@ -80,6 +80,7 @@ class SubmissionSummary(BaseModel):
     industry: str
     team_size: str
     status: str
+    email: str | None = None
     automation_score: int | None = None
     hours_wasted_weekly: float | None = None
     created_at: datetime
