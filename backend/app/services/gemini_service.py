@@ -97,7 +97,7 @@ class GeminiService:
         logger.info("Running Company Intelligence Layer for %s", business_name)
         prompt = f"""
 You are the Lead Company Intelligence Analyst for Innoalaxy.
-Analyze the following business to detect its scale, industry context, operational maturity, and strategic automation requirements.
+Analyze the following business to detect its scale, core offerings, operational maturity, and strategic automation requirements.
 
 Company Name: {business_name}
 Declared Industry: {industry}
@@ -105,25 +105,35 @@ Team Size Category: {team_size}
 Process Description: {process_description}
 
 INSTRUCTIONS:
-1. Identify the true Scale/Stage of the company (Enterprise, Mid-Market, Startup/SME).
-   - Enterprise: Well-known large companies, unicorns, or companies with huge operational scale (e.g. Rebel Foods, Uber, BYJU'S, Apollo Hospitals, Razorpay, Zepto, or any process indicating 200+ team size, or if team size is 50+ / 51-200 and description shows complex systems).
+1. **Business Awareness Layer (CRITICAL):**
+   - Identify the core product/service of the target company. What do they sell to their own customers? (e.g. Postman sells API testing, documentation, and collaboration platforms; Uber sells rides/logistics; Slack sells chat; Razorpay sells payment aggregation).
+   - **DO NOT SOLVE SOLVED PROBLEMS:** You must NEVER recommend automating workflows or using tools that are the company's own core product/service (e.g., do NOT recommend automating API documentation or API testing for Postman; do NOT suggest basic chat workspace set up for Slack).
+   - Focus entirely on adjacent, internal operational bottlenecks, scaling challenges, or developer success issues (e.g., for Postman: Enterprise API Governance Complexity, Developer Support ticket routing, Onboarding Funnel drop-offs, churn prediction. For Uber: customer support refund validation, rider-to-hub compliance verification).
+
+2. **Identify Company Scale:**
+   - Enterprise: Well-known large companies, unicorns, or companies with huge operational scale (e.g. Rebel Foods, Postman, Uber, BYJU'S, Apollo Hospitals, Razorpay, Zepto, or any process indicating 200+ team size, or if team size is 50+ / 51-200 and description shows complex systems).
    - Mid-Market: Growth-stage companies (51-200 team size).
    - Startup/SME: Small businesses or early-stage startups (1-50 team size).
-2. Industry & Sector Detection: Determine the specific operational domain (e.g. "FoodTech / Cloud Kitchen / Multi-brand Restaurant Operations", "FinTech / Digital Lending / Payment Operations", "Healthcare / Hospital Operations / Clinical Workflow Automation", "Logistics / Quick Commerce / Supply Chain Operations", "EdTech / Digital Learning Operations / Educational Support").
-3. Operational & Tech Maturity Detection: Classify as Low, Medium, or High.
-   - Large enterprise brands (like Rebel Foods, Zepto, Razorpay, BYJU'S, Uber, Apollo Hospitals) have HIGH tech maturity (they don't use simple spreadsheets and manual emails for core operations; they use ERPs, custom ML, advanced logistics APIs, etc.).
-4. Pain Point Strategy:
-   - Identify 2-4 highly specific operational pain points matching their scale and industry. For example, for an enterprise cloud kitchen (like Rebel Foods): multi-brand inventory sync, demand forecasting by city/time, delivery delay prediction, food wastage reduction, partner platform (Swiggy/Zomato) API reconciliation. DO NOT use generic pain points like "manual emails and spreadsheets" for enterprises.
-5. Tool Recommendation Category:
-   - Enterprise: Custom AI agents, ERP integrations, internal ML systems, custom Python orchestration. Avoid recommending basic startup tools like TradeGecko, Zoho, Make.com, or Zapier unless justified. Instead suggest SAP Supply Chain, Oracle Netsuite, Odoo Enterprise, delivery orchestration APIs, Swiggy/Zomato integration monitoring, Kitchen-to-rider SLA tracking, or custom AI models.
-   - Mid-Market: HubSpot, Salesforce, Airbyte, custom API connectors, Flowise, Odoo.
-   - Startup/SME: Make.com, Zapier, Zoho, Google Sheets, Tally.
-6. Transparent Automation Score Breakdown:
+
+3. **Maturity & Realistic Hours Saved Estimation:**
+   - Large enterprises have HIGH tech maturity. Ground their pain points in internal scaling bottlenecks, not basic tasks (e.g. do not say an enterprise uses "manual spreadsheets and phone calls" for its core business).
+   - Ground the weekly hours wasted realistically based on company scale and tech maturity:
+     * Startup: 10 - 25 hours total.
+     * Mid-Market: 20 - 45 hours total.
+     * Enterprise: 25 - 50 hours total (since they are already highly tech-enabled, they don't waste 100+ hours on simple manual data entry).
+
+4. **Tool Recommendation Category:**
+   - Recommend tools/platforms adjacent to their operations but outside their core product catalog. Avoid outdated tools like TradeGecko, or unrealistic shipping tools like DHL API for cloud kitchens.
+   - For Enterprise: Advanced custom AI models, custom analytics pipelines, enterprise CRM/ERP integrations (Netsuite, SAP, Salesforce Enterprise), advanced governance automation tools. No basic tools like Zapier/Make.
+   - For Mid-Market: HubSpot, Salesforce, Airbyte, custom API connectors, Flowise, Odoo.
+   - For Startup/SME: Make.com, Zapier, Zoho, Google Sheets, Tally.
+
+5. **Transparent Automation Score Breakdown:**
    Calculate the sub-scores and Final Score:
    - Process Automation Potential (out of 40)
    - Operational Inefficiency (out of 30)
    - AI Readiness (out of 20)
-   - Integration Feasibility (out of 10)
+   - Tool Integration Feasibility (out of 10)
    - Final Score = sum of the above (0-100)
    Vary this score realistically based on the process complexity and scale.
 
@@ -197,7 +207,25 @@ Return ONLY a valid JSON object matching this schema:
         recommended_tools = ["Make.com", "Zapier", "Zoho Books", "Google Sheets"]
         score_breakdown = {"potential": 30, "inefficiency": 20, "readiness": 15, "feasibility": 9, "final_score": 74}
 
-        if any(w in biz or w in desc or w in ind for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
+        if any(w in biz or w in desc or w in ind for w in ["postman", "api tools", "developer tools", "github", "gitlab"]):
+            detected_industry = "Developer Tools / API Collaboration Platform / Enterprise SaaS"
+            if scale == "Enterprise":
+                strategic_pain_points = [
+                    {"title": "Enterprise API Governance Complexity", "focus_area": "Governance", "description": "Maintaining design and security standards across thousands of APIs and teams as enterprise customer adoption scales."},
+                    {"title": "AI-Powered API Generation Competition", "focus_area": "Productivity", "description": "Rise of AI-native API development tools creating pressure to accelerate developer creation, debugging, and document mapping."},
+                    {"title": "Developer Onboarding Funnel Friction", "focus_area": "Growth & Support", "description": "Tracking developer interaction patterns to optimize self-serve onboarding and reduce user churn."}
+                ]
+                recommended_tools = ["Custom API anomaly detection models", "LLM-based API debugging assistants", "Salesforce Enterprise", "Governance automation engines"]
+                score_breakdown = {"potential": 33, "inefficiency": 19, "readiness": 17, "feasibility": 8, "final_score": 77}
+            else:
+                strategic_pain_points = [
+                    {"title": "Automated Contract Testing Gate", "focus_area": "CI/CD", "description": "Integrating automated contract checks within integration pipelines to eliminate manual validation delays."},
+                    {"title": "Telemetry Collection Bottlenecks", "focus_area": "Productivity", "description": "Instrumenting and aggregating usage telemetry across APIs to identify developer drop-offs."}
+                ]
+                recommended_tools = ["GitHub Actions", "Mixpanel product analytics", "Grafana Labs", "Prometheus"]
+                score_breakdown = {"potential": 30, "inefficiency": 18, "readiness": 12, "feasibility": 9, "final_score": 69}
+
+        elif any(w in biz or w in desc or w in ind for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
             detected_industry = "FoodTech / Cloud Kitchen / Multi-brand Restaurant Operations"
             if scale == "Enterprise":
                 strategic_pain_points = [
@@ -312,11 +340,17 @@ Return ONLY a valid JSON object matching this schema:
             # 5. Validation Agent (New Feature)
             result.blueprint = await self.validate_and_optimize_blueprint(submission_data, result.blueprint)
             
+            # Inject score breakdown
+            if result.blueprint and intel_context:
+                result.blueprint.score_breakdown = intel_context.get("score_breakdown")
+            
             return result
         except Exception as exc:
             logger.exception("Audit completely failed, using fallback: %s", exc)
             result = self._fallback_audit(submission_data, intel_context)
             result.blueprint = self._fallback_blueprint(result)
+            if result.blueprint and intel_context:
+                result.blueprint.score_breakdown = intel_context.get("score_breakdown")
             return result
 
     async def generate_blueprint(self, audit_result: AuditResult) -> BlueprintResult:
@@ -403,19 +437,11 @@ INSTRUCTIONS:
         total_hours = sum(p["time_wasted_hours"] for p in pain_points)
 
         summary_text = (
-            f"### Automation Score Breakdown\n"
-            f"- Process Automation Potential: {intel_context['score_breakdown']['potential']}/40\n"
-            f"- Operational Inefficiency: {intel_context['score_breakdown']['inefficiency']}/30\n"
-            f"- AI Readiness: {intel_context['score_breakdown']['readiness']}/20\n"
-            f"- Tool Integration Feasibility: {intel_context['score_breakdown']['feasibility']}/10\n"
-            f"**Final Score = {total_score}%**\n\n"
-            f"### Estimated Weekly Time Savings\n"
+            f"We will deploy a tailored **{intel_context['company_scale']}-grade Custom Software + AI Agent** pipeline to "
+            f"resolve key operational bottlenecks for {data.get('business_name', 'your company')}. This solution will "
+            f"directly optimize workflows in the {intel_context['detected_industry']} domain, eliminating manual delays "
+            f"and driving operational efficiency."
         )
-        for p in pain_points:
-            summary_text += f"- {p['title']} → {p['time_wasted_hours']} hrs\n"
-        summary_text += f"**Total ≈ {total_hours} hrs/week**\n\n"
-        
-        summary_text += f"We will deploy a tailored **{intel_context['company_scale']}-grade Custom Software + AI Agent** pipeline to resolve key operational bottlenecks for {data.get('business_name', 'your company')}."
 
         return AuditResult(
             automation_score=total_score,

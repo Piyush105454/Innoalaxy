@@ -168,7 +168,13 @@ class RAGScraperAgent:
             ind = (submission.industry or "").lower()
             biz_lower = submission.business_name.lower()
             
-            if any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
+            if any(w in desc or w in ind or w in biz_lower for w in ["postman", "developer tools", "api tools", "github", "gitlab", "software development"]):
+                tools_list = [
+                    "- **Operations AI (API Governance & Security)**: Spectral or custom linting engines built into CI/CD pipelines to validate API designs against compliance rules.",
+                    "- **Customer AI (Developer Support Triage)**: Custom LLM routing agents built with Flowise or Langflow to classify and answer developer queries.",
+                    "- **Expansion AI (Predictive Adoption & Churn)**: Census or Mixpanel API syncs to forecast developer drop-offs and optimize onboarding flows."
+                ]
+            elif any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
                 tools_list = [
                     "- **Operations AI (Demand & Ingredient Forecasting)**: Custom ML models (using historical order data) to predict hourly demand spikes per location and optimize stock levels to minimize food wastage.",
                     "- **Customer AI (Order Recovery & Chat Support)**: Yellow.ai or Haptik to handle automated order recovery and multilingual support queries across delivery channels.",

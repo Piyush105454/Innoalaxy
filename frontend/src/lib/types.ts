@@ -22,6 +22,7 @@ export interface BlueprintResult {
   build_time_weeks: number;
   hours_saved_weekly: number;
   price_range: string;
+  score_breakdown?: Record<string, number>;
 }
 
 export interface AuditResult {

@@ -13,6 +13,7 @@ with open(".env") as f:
         if "=" in line and not line.startswith("#"):
             k, v = line.split("=", 1)
             os.environ[k.strip()] = v.strip()
+os.environ["DATABASE_URL"] = "sqlite:///innoalaxy_test.db"
 
 SEP = "=" * 60
 

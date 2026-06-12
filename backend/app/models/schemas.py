@@ -40,6 +40,7 @@ class BlueprintResult(BaseModel):
     build_time_weeks: int
     hours_saved_weekly: float
     price_range: str
+    score_breakdown: dict[str, int] | None = None
 
 
 class AuditResult(BaseModel):

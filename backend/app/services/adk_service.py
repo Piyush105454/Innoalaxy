@@ -294,7 +294,19 @@ class InnoalaxyAgent:
             business_name = submission.business_name
             biz_lower = business_name.lower()
             
-            if any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
+            if any(w in desc or w in ind or w in biz_lower for w in ["postman", "developer tools", "api tools", "github", "gitlab", "software development"]):
+                if "postman" in biz_lower or "enterprise" in desc or "200" in (submission.team_size or "") or "500" in (submission.team_size or ""):
+                    plan_items = [
+                        "1. **Enterprise API Governance Automation**: Integrate custom validation checks into CI/CD pipelines to enforce security and design compliance automatically.",
+                        "2. **Developer Support Routing Agent**: Deploy an AI classifier to automatically triage incoming developer queries and assign them to the correct engineering pod.",
+                        "3. **AI-Powered Code & Tool Mapping**: Implement developer feedback pipelines to forecast feature adoption and developer churn risks."
+                    ]
+                else:
+                    plan_items = [
+                        "1. **Support Query Routing**: Set up Make.com to triage incoming developer tickets to correct Slack channels.",
+                        "2. **Mixpanel Analytics Sync**: Use Make.com to sync developer interaction metrics into HubSpot for marketing follow-ups."
+                    ]
+            elif any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
                 if "rebel" in biz_lower or "enterprise" in desc or "200" in (submission.team_size or "") or "500" in (submission.team_size or ""):
                     plan_items = [
                         "1. **Multi-Brand Inventory & Order Sync**: Connect custom API feeds from Swiggy/Zomato to Oracle Netsuite / SAP SCM to keep inventory synced across virtual brands in real-time.",

@@ -26,28 +26,22 @@ We have run a Company Intelligence Layer which analyzed this company's profile a
 Your goal is to provide a rich, engaging, and highly personalized analysis that matches the scale, tech maturity, and operational maturity of the business. Avoid generic advice or repeating templates.
 
 PROMPT DESIGN RULES:
-1. **Leverage the Company Intelligence Context:**
+1. **Leverage the Company Intelligence Context (Business Awareness Layer):**
    - **Company Scale / Maturity:** Ground the pain points and tool suggestions in the detected scale: `{intelligence_context.get("company_scale")}` and maturity: `{intelligence_context.get("tech_maturity")}`.
-   - **Classification:** Use the detected industry classification `{intelligence_context.get("detected_industry")}` as the primary reference domain for industry-specific context. For example, do not describe Rebel Foods as a B2B manufacturer; call it "FoodTech / Cloud Kitchen / Multi-brand Restaurant Operations".
-   - **Pain Points:** Adapt and enrich the strategic focus areas (`strategic_pain_points`) from the intelligence context. Ensure they describe real operational bottlenecks matching the company's scale. (For enterprise cloud kitchens, focus on demand forecasting, multi-brand inventory sync, kitchen load balancing, delivery delay/SLA monitoring, etc. DO NOT mention basic "emails and spreadsheets" or "manual phone calls" if the tech maturity is High).
-   - **Tool Stack:** Suggest tools from the recommended tools list: {intelligence_context.get("recommended_tools")}. NEVER recommend outdated tools like TradeGecko, or generic/unrealistic shipping services like DHL API for hyperlocal cloud kitchen delivery. Recommend Odoo Enterprise, SAP Supply Chain, Oracle Netsuite, Custom demand forecasting models, delivery orchestration APIs (e.g., Swiggy/Zomato API feeds, kitchen-to-rider SLA monitors, or courier aggregates).
+   - **Business Conflict Check:** Do NOT recommend automating workflows or using tools that are the company's own core product/service (e.g., if auditing Postman, NEVER suggest automating API testing, API documentation, or API monitoring, as this is their own core product. Instead, focus on adjacent engineering ops, enterprise governance, support routing, developer churn, or telemetry).
+   - **Classification:** Use the detected industry classification `{intelligence_context.get("detected_industry")}` as the primary reference domain for industry-specific context.
+   - **Pain Points:** Adapt and enrich the strategic focus areas (`strategic_pain_points`) from the intelligence context. Ensure they describe real operational bottlenecks matching the company's scale. (For mature enterprise companies, focus on engineering scalability, API governance, user activation, support triage, etc. DO NOT mention basic "emails and spreadsheets" or "manual phone calls" if the tech maturity is High).
+   - **Capability-First Tool Stack:** Recommend tools from the recommended tools list: {intelligence_context.get("recommended_tools")}. Match tooling to maturity:
+     * Enterprise: custom CLI linters, Datadog Observability APIs, Mixpanel product analytics, GitHub Actions workflows, custom AI models. Avoid no-code tools like Make.com, Zapier, WhatsApp, or Slack alerts for mature engineering firms like Postman.
+     * Mid-Market: HubSpot, Salesforce, Airbyte, custom API connectors, Flowise, Odoo.
+     * Startup: Make.com, Zapier, Zoho, Google Sheets, Tally.
+   - **Banish Vendor Overuse:** Do NOT overuse specific vendor tools (specifically do NOT recommend "Uniphore" unless it is the only viable fit for a conversational voice/contact center scenario). Prefer standard tools (Datadog, New Relic, Grafana, Salesforce, etc.) and explain WHY each recommendation fits this specific business.
 
-2. **Calculate a Transparent Automation Score:**
+2. **Automation Score:**
    - The automation score MUST match the intelligence layer's final score: {intelligence_context.get("score_breakdown", {}).get("final_score")}.
-   - In the `summary` JSON field, you MUST include the transparent scoring breakdown at the top:
-     ### Automation Score Breakdown
-     - Process Automation Potential: {intelligence_context.get("score_breakdown", {}).get("potential")}/40
-     - Operational Inefficiency: {intelligence_context.get("score_breakdown", {}).get("inefficiency")}/30
-     - AI Readiness: {intelligence_context.get("score_breakdown", {}).get("readiness")}/20
-     - Tool Integration Feasibility: {intelligence_context.get("score_breakdown", {}).get("feasibility")}/10
-     **Final Score = {intelligence_context.get("score_breakdown", {}).get("final_score")}%**
 
 3. **Time Savings Explainability:**
    - The sum of the `time_wasted_hours` across all items in the `pain_points` list MUST exactly equal the `hours_wasted_weekly` value you return.
-   - In the `summary` JSON field, right below the score breakdown, you MUST include a clean markdown breakdown explaining the time savings:
-     ### Estimated Weekly Time Savings
-     [List each pain point title] → [time_wasted_hours] hrs
-     **Total ≈ [hours_wasted_weekly] hrs/week**
 
 Return ONLY valid JSON with this exact shape:
 {{
@@ -64,8 +58,8 @@ Return ONLY valid JSON with this exact shape:
       "complexity": "medium"
     }}
   ],
-  "summary": "Tailored, engaging explanation of how Innoalaxy will transform their operations. Mention the specific Custom Software + AI Agent combination. INCLUDE the transparent scoring breakdown and the time savings breakdown at the top of the summary.",
-  "industry_context": "Deep, scale-appropriate analysis about how modern AI tools and automated pipelines are applied in this sector to solve similar problems."
+  "summary": "A highly tailored, engaging, and professional explanation of how Innoalaxy will transform their operations. Write it as a clean, human-like consulting summary explaining why the business needs AI automation software. Explain the specific adjacent/internal operational bottlenecks and solutions. DO NOT include raw score breakdowns, formulas, markdown headings for scores, or bulleted lists of numbers in this field.",
+  "industry_context": "Deep, scale-appropriate analysis about how modern AI tools and automated pipelines are applied in this sector to solve similar problems. Explain WHY each recommendation fits this company specifically."
 }}
 
 Rules for the LLM (CRITICAL):
@@ -74,4 +68,5 @@ Rules for the LLM (CRITICAL):
 - Use only these priority values: high, medium, low.
 - Use only these complexity values: simple, medium, complex.
 - Do NOT return invalid values or empty keys.
+- Escape any double quotes inside JSON string values (use \" or replace them with single quotes) so the JSON is fully parseable.
 """.strip()
