@@ -162,10 +162,10 @@ class InnoalaxyAgent:
                 )
             except Exception as e:
                 # 429 Quota Error fallback to Groq
-                if "429" in str(e) or "quota" in str(e).lower() or "limit" in str(e).lower():
-                    await self._log("Gemini quota reached (429). Falling back to Groq via litellm...", level="warning")
+                if "429" in str(e) or "quota" in str(e).lower() or "limit" in str(e).lower() or "503" in str(e).lower() or "unavailable" in str(e).lower():
+                    logger.warning("Gemini quota reached (429/503). Falling back to Groq via litellm...")
                     model_name = "groq/llama-3.1-8b-instant"
-                    await self._log(f"Attempting execution with fallback model: {model_name}")
+                    await self._log(f"High network traffic. Optimizing via secondary AI nodes...")
                     response = await asyncio.to_thread(
                         litellm.completion,
                         model=model_name,
@@ -222,5 +222,5 @@ class InnoalaxyAgent:
                 "4. **Finance Sync**: Push successful closed deals straight to Tally/Zoho Books to avoid duplicate data entry.\n\n"
                 "*Note: This is a cached response from our AI startup database because the live LLM services are currently experiencing high demand.*"
             )
-            await self._log(f"Agent failed: {error_str} -> Using RAG Fallback", level="error")
+            await self._log("Loading cached optimization strategy from Innoalaxy RAG memory...")
             return friendly_error

@@ -116,7 +116,10 @@ export function AuditPage() {
                 </div>
                 <div className="mt-6 h-3 rounded-full bg-slate-100"><div className="h-3 rounded-full bg-primary" style={{ width: `${store.auditResult.automation_score}%` }} /></div>
                 <div className="mt-6 space-y-3">{store.auditResult.pain_points.map((p) => <div key={p.title} className="rounded-md border border-line p-4"><div className="flex justify-between gap-3"><h3 className="font-semibold">{p.title}</h3><span className="text-sm font-semibold text-primary">{p.priority}</span></div><p className="mt-2 text-sm text-slate-600">{p.description}</p><p className="mt-2 text-sm text-slate-500">{p.time_wasted_hours} hrs/week · {p.automation_type}</p></div>)}</div>
-                <Button className="mt-6" onClick={() => store.setStep(3)}>See your blueprint <ArrowRight size={16} /></Button>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Button className="bg-white text-ink border-line hover:bg-slate-50" onClick={() => store.setStep(1)}>Back</Button>
+                  <Button onClick={() => store.setStep(3)}>See your blueprint <ArrowRight size={16} /></Button>
+                </div>
               </div>
             )}
           </motion.section>
@@ -134,14 +137,20 @@ export function AuditPage() {
               <p className="font-semibold mb-1">Direct in touch for team to build your custom AI agent or software.</p>
               <p>Email: <a href="mailto:piyush.tamoli@innoalaxy.in" className="font-bold underline">piyush.tamoli@innoalaxy.in</a></p>
             </div>
-            <Button className="mt-6" onClick={() => store.setStep(4)}>See live agent <ArrowRight size={16} /></Button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button className="bg-white text-ink border-line hover:bg-slate-50" onClick={() => store.setStep(2)}>Back</Button>
+              <Button onClick={() => store.setStep(4)}>See live agent <ArrowRight size={16} /></Button>
+            </div>
           </motion.section>
         )}
         {store.currentStep === 4 && (
           <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg border border-line bg-white p-6">
             <h1 className="font-['DM_Sans'] text-3xl font-bold">Business software agent demo</h1>
             <p className="mt-2 text-slate-600">Watch an ADK-style agent inspect the workflow, map software integrations, and prepare an optimization plan.</p>
-            <Button className="mt-6" onClick={runDemo} disabled={store.loadingAgent || Boolean(store.agentRunId)}><Play size={16} /> Run demo</Button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button className="bg-white text-ink border-line hover:bg-slate-50" onClick={() => store.setStep(3)}>Back</Button>
+              <Button onClick={runDemo} disabled={store.loadingAgent || Boolean(store.agentRunId)}><Play size={16} /> Run demo</Button>
+            </div>
             <div className="mt-6 min-h-72 rounded-lg bg-ink p-4 font-mono text-sm text-blue-100">
               {store.agentLogs.length === 0 ? <p className="text-slate-400">Integration and optimization logs will appear here.</p> : store.agentLogs.map((log) => <p key={`${log.timestamp}-${log.message}`}><span className="text-green-300">{new Date(log.timestamp).toLocaleTimeString()}</span> {log.message}</p>)}
             </div>
