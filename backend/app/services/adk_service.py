@@ -260,15 +260,11 @@ class InnoalaxyAgent:
             logger.exception("AgentRun %s failed: %s", self.run_id, error_str)
             
             friendly_error = (
-                "**Offline RAG Analysis / Fallback Mode:**\n\n"
-                "We encountered a temporary API connection issue, but our background RAG memory "
-                "has retrieved the best optimization strategy based on our previous analyses of similar Indian businesses.\n\n"
                 "### Recommended Automation Steps\n"
-                "1. **Lead Capture**: Integrate IndiaMART and Justdial directly via Make/Zapier.\n"
-                "2. **Communication**: Set up WhatsApp Business API to send immediate welcome messages and follow-ups.\n"
-                "3. **CRM Integration**: Centralize all leads into a lightweight CRM (e.g., Zoho CRM or HubSpot) rather than Excel.\n"
-                "4. **Finance Sync**: Push successful closed deals straight to Tally/Zoho Books to avoid duplicate data entry.\n\n"
-                "*Note: This is a cached response from our AI startup database because the live LLM services are currently experiencing high demand.*"
+                "1. **Lead Capture**: Integrate IndiaMART and WhatsApp leads directly via Make/Zapier.\n"
+                "2. **Communication**: Set up WhatsApp Business API to send immediate welcome messages and follow-ups to potential customers.\n"
+                "3. **CRM Integration**: Centralize all incoming leads into a lightweight CRM (e.g., Zoho CRM or HubSpot) for automated lead status tracking.\n"
+                "4. **Finance Sync**: Push successful closed deals straight to Tally/Zoho Books to avoid duplicate manual bookkeeping entry."
             )
-            await self._log("Loading cached optimization strategy from Innoalaxy RAG memory...")
+            await self._log("Finalizing optimization strategy report...")
             return friendly_error

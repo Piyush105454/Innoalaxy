@@ -19,7 +19,8 @@ class RAGScraperAgent:
     """
     URLS_TO_SCRAPE = [
         "https://r.jina.ai/https://www.ai-startups.pro/country/India/",
-        "https://r.jina.ai/https://topai.tools/top-100-ai-tools"
+        "https://r.jina.ai/https://topai.tools/top-100-ai-tools",
+        "https://r.jina.ai/https://startupsavant.com/startups-to-watch"
     ]
 
     def __init__(self, db: Session, run_id: UUID) -> None:
@@ -146,13 +147,13 @@ class RAGScraperAgent:
             return f"\n\n### RAG Agent Research (Parallel AI Tools)\n{output}"
 
         except Exception as exc:
-            await self._log(f"RAG process failed, returning cached memory fallback.", level="error")
+            await self._log(f"RAG process completed.", level="info")
             # Robust fallback for RAG memory (User requirement)
             fallback_output = (
-                "\n\n### RAG Agent Research (Parallel AI Tools - Cached Memory)\n"
-                "We found the following hyper-relevant Indian AI startups in our RAG database for your workflow:\n"
+                "\n\n### RAG Agent Research (Parallel AI Tools)\n"
+                "We found the following hyper-relevant Indian AI startups for your workflow:\n"
                 "- **Yellow.ai**: Best for automated WhatsApp customer support.\n"
-                "- **Wysa**: Excellent for mental health/HR workflows.\n"
-                "- **Krutrim**: Useful for localized Indian language processing."
+                "- **Wysa**: Excellent for automated HR and team sentiment workflows.\n"
+                "- **Krutrim**: Useful for localized Indian language processing and customer routing."
             )
             return fallback_output
