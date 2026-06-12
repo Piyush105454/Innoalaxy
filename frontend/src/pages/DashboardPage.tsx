@@ -6,9 +6,11 @@ import type { SubmissionSummary } from "../lib/types";
 import { useAuth, SignInButton } from "@clerk/clerk-react";
 import { useAuditStore } from "../store/auditStore";
 import { Button } from "../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPage() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
+  const navigate = useNavigate();
   const [rows, setRows] = useState<SubmissionSummary[]>([]);
   const [query, setQuery] = useState("");
   const store = useAuditStore();
@@ -66,7 +68,7 @@ export function DashboardPage() {
     }
     
     localStorage.setItem("audit_business_name", detail.business_name);
-    window.location.href = "/audit";
+    navigate("/audit");
   };
 
   if (!isLoaded) return <div className="p-8 text-center">Loading...</div>;

@@ -5,9 +5,11 @@ import { listSubmissions, getSubmission } from "../lib/api";
 import type { SubmissionSummary } from "../lib/types";
 import { useUser, SignInButton, SignOutButton } from "@clerk/clerk-react";
 import { useAuditStore } from "../store/auditStore";
+import { useNavigate } from "react-router-dom";
 
 export function AdminDashboardPage() {
   const { user, isLoaded, isSignedIn } = useUser();
+  const navigate = useNavigate();
   const [rows, setRows] = useState<SubmissionSummary[]>([]);
   const [query, setQuery] = useState("");
   const store = useAuditStore();
@@ -51,7 +53,7 @@ export function AdminDashboardPage() {
       }
       
       localStorage.setItem("audit_business_name", detail.business_name);
-      window.location.href = "/audit";
+      navigate("/audit");
     } catch (e) {
       console.error(e);
     }

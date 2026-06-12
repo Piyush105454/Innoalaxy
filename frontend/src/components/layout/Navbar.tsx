@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { Link } from "react-router-dom";
 
 export function Navbar() {
   const [dark, setDark] = useState(false);
@@ -33,7 +34,7 @@ export function Navbar() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5 group">
+        <Link to="/" className="flex items-center gap-2.5 group">
           {/* Pure SVG Custom Logo */}
           <div className="w-10 h-10 bg-ink rounded-lg flex items-center justify-center p-1.5 shadow-md shadow-gray-200">
             <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
@@ -64,7 +65,7 @@ export function Navbar() {
           <span className="font-['DM_Sans'] text-xl font-bold text-ink tracking-tight">
             Innoalaxy
           </span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
@@ -97,12 +98,12 @@ export function Navbar() {
             </SignInButton>
           </SignedOut>
 
-          <a
-            href="/audit"
+          <Link
+            to="/audit"
             className="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-sm shadow-blue-200"
           >
             Get Started
-          </a>
+          </Link>
           
           <SignedIn>
             <div className="ml-2">
