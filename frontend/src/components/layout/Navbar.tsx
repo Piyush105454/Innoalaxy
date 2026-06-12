@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
 
 export function Navbar() {
@@ -91,11 +91,18 @@ export function Navbar() {
           </button>
           
           <SignedOut>
-            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-              <button className="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
-                Login
-              </button>
-            </SignInButton>
+            <div className="hidden md:flex items-center gap-2">
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+                <button className="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
+                  Login
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
+                <button className="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-primary text-primary text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </div>
           </SignedOut>
 
           <Link
