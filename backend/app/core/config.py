@@ -15,6 +15,7 @@ class Settings(BaseSettings):
         return self.groq_api_key.strip() if self.groq_api_key else None
     gemini_model: str = "gemini-1.5-pro"
     groq_api_key: str | None = None
+    groq_api_key_3: str | None = None
     groq_model: str = "llama-3.3-70b-versatile"
     innoalaxy_admin_key: str = "change-me"
     frontend_url: str = "http://localhost:5173"
