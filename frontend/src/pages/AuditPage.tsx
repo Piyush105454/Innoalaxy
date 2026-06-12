@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState, useMemo } from "react";
+import { FormEvent, useEffect, useState, useMemo, useRef } from "react";
 import { useAuth, SignInButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { ArrowRight, MessageCircle, CheckCircle, FileText, Play, RotateCcw, Upload, Search, Zap } from "lucide-react";
@@ -10,6 +10,7 @@ import { Button } from "../components/ui/Button";
 import { DeepResearchTree } from "../components/DeepResearchTree";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import html2pdf from "html2pdf.js";
 
 const industries = ["B2B Manufacturing", "SaaS", "HR & Recruitment", "Real Estate", "Logistics", "Healthcare", "Education", "Retail", "Finance", "Professional Services"];
 const teamSizes = ["1-5", "6-15", "16-50", "51-200", "200+"];
@@ -26,6 +27,20 @@ export function AuditPage() {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [limitReached, setLimitReached] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = () => {
+    if (!printRef.current) return;
+    const element = printRef.current;
+    const opt = {
+      margin: 0.5,
+      filename: `${businessName || 'Innoalaxy'}_AI_Blueprint.pdf`,
+      image: { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
+    };
+    html2pdf().set(opt).from(element).save();
+  };
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -222,8 +237,15 @@ export function AuditPage() {
         )}
         {store.currentStep === 4 && (
           <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-line bg-white p-8 shadow-sm">
-            <h1 className="font-['DM_Sans'] text-4xl font-extrabold text-ink">Business Software Agent Demo</h1>
-            <p className="mt-3 text-lg text-slate-600">Watch our Validation Agent actively research tools, map integrations, and formulate your final optimization plan in real-time.</p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+              <h1 className="font-['DM_Sans'] text-4xl font-extrabold text-ink">Business Software Agent Demo</h1>
+              {store.agentOutput && (
+                <Button onClick={handleDownloadPdf} className="bg-slate-800 text-white hover:bg-slate-900 shadow-md">
+                  <Upload size={16} className="mr-2 rotate-180" /> Export PDF
+                </Button>
+              )}
+            </div>
+            <p className="text-lg text-slate-600">Watch our Validation Agent actively research tools, map integrations, and formulate your final optimization plan in real-time.</p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Button variant="outline" onClick={() => store.setStep(3)}>Back</Button>
               <Button onClick={runDemo} disabled={store.loadingAgent || Boolean(store.agentRunId)}><Play size={16} /> Start Live Demo</Button>
@@ -247,10 +269,13 @@ export function AuditPage() {
             </div>
 
             {store.agentOutput && (
-              <div className="mt-10 rounded-2xl border border-line bg-white shadow-xl overflow-hidden">
-                <div className="bg-emerald-50 border-b border-emerald-100 p-6 flex items-center gap-3">
-                  <CheckCircle className="text-emerald-600" size={28} />
-                  <h3 className="font-bold text-2xl text-emerald-900 font-['DM_Sans']">Final Optimization Plan</h3>
+              <div ref={printRef} className="mt-10 rounded-2xl border border-line bg-white shadow-xl overflow-hidden print-container">
+                <div className="bg-emerald-50 border-b border-emerald-100 p-6 flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle className="text-emerald-600" size={28} />
+                    <h3 className="font-bold text-2xl text-emerald-900 font-['DM_Sans']">Final Optimization Plan</h3>
+                  </div>
+                  {businessName && <span className="font-bold text-emerald-800">{businessName}</span>}
                 </div>
                 <div className="p-8 text-base bg-white">
                   <ReactMarkdown 
