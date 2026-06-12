@@ -172,47 +172,9 @@ export function AuditPage() {
                 </div>
                 <div className="mt-6 grid gap-4 md:grid-cols-3">
                   <Metric label="Automation score" value={`${store.auditResult.automation_score}%`} />
-                  <Metric label="Hours wasted weekly" value={`${store.auditResult.hours_wasted_weekly}`} />
+                  <Metric label="Potential weekly reduction" value={`${store.auditResult.hours_wasted_weekly} hrs`} />
                   <Metric label="Pain points" value={`${store.auditResult.pain_points.length}`} />
                 </div>
-                {store.auditResult.blueprint?.score_breakdown && (
-                  <div className="mt-6 rounded-xl border border-slate-100 bg-slate-50/50 p-5">
-                    <h3 className="font-semibold text-slate-800 text-xs uppercase tracking-wider">Automation Score Breakdown Formula</h3>
-                    <div className="mt-3 grid gap-3 grid-cols-2 lg:grid-cols-4">
-                      <div className="rounded-lg bg-white p-3 shadow-sm border border-slate-100">
-                        <span className="text-xs text-slate-500 block">Process Potential</span>
-                        <span className="text-lg font-bold text-slate-800">
-                          {store.auditResult.blueprint.score_breakdown.potential ?? 
-                           store.auditResult.blueprint.score_breakdown.Process_Automation_Potential ?? 0}/40
-                        </span>
-                      </div>
-                      <div className="rounded-lg bg-white p-3 shadow-sm border border-slate-100">
-                        <span className="text-xs text-slate-500 block">Operational Inefficiency</span>
-                        <span className="text-lg font-bold text-slate-800">
-                          {store.auditResult.blueprint.score_breakdown.inefficiency ?? 
-                           store.auditResult.blueprint.score_breakdown.Operational_Inefficiency ?? 0}/30
-                        </span>
-                      </div>
-                      <div className="rounded-lg bg-white p-3 shadow-sm border border-slate-100">
-                        <span className="text-xs text-slate-500 block">AI Readiness</span>
-                        <span className="text-lg font-bold text-slate-800">
-                          {store.auditResult.blueprint.score_breakdown.readiness ?? 
-                           store.auditResult.blueprint.score_breakdown.AI_Readiness ?? 0}/20
-                        </span>
-                      </div>
-                      <div className="rounded-lg bg-white p-3 shadow-sm border border-slate-100">
-                        <span className="text-xs text-slate-500 block">Integration Feasibility</span>
-                        <span className="text-lg font-bold text-slate-800">
-                          {store.auditResult.blueprint.score_breakdown.feasibility ?? 
-                           store.auditResult.blueprint.score_breakdown.Tool_Integration_Feasibility ?? 0}/10
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3 text-xs text-slate-500 text-right font-medium">
-                      Final Score = Potential + Inefficiency + Readiness + Feasibility = {store.auditResult.automation_score}%
-                    </div>
-                  </div>
-                )}
                 <div className="mt-6 h-3 rounded-full bg-slate-100"><div className="h-3 rounded-full bg-primary" style={{ width: `${store.auditResult.automation_score}%` }} /></div>
                 <div className="mt-6 space-y-3">{store.auditResult.pain_points.map((p) => <div key={p.title} className="rounded-md border border-line p-4"><div className="flex justify-between gap-3"><h3 className="font-semibold">{p.title}</h3><span className="text-sm font-semibold text-primary">{p.priority}</span></div><p className="mt-2 text-sm text-slate-600">{p.description}</p><p className="mt-2 text-sm text-slate-500">{p.time_wasted_hours} hrs/week · {p.automation_type}</p></div>)}</div>
                 <div className="mt-6 flex flex-wrap gap-3">

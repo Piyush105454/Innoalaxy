@@ -30,28 +30,42 @@ PROMPT DESIGN RULES:
    - **Company Scale / Maturity:** Ground the pain points and tool suggestions in the detected scale: `{intelligence_context.get("company_scale")}` and maturity: `{intelligence_context.get("tech_maturity")}`.
    - **Business Conflict Check:** Do NOT recommend automating workflows or using tools that are the company's own core product/service (e.g., if auditing Postman, NEVER suggest automating API testing, API documentation, or API monitoring, as this is their own core product. Instead, focus on adjacent engineering ops, enterprise governance, support routing, developer churn, or telemetry).
    - **Classification:** Use the detected industry classification `{intelligence_context.get("detected_industry")}` as the primary reference domain for industry-specific context.
-   - **Pain Points:** Adapt and enrich the strategic focus areas (`strategic_pain_points`) from the intelligence context. Ensure they describe real operational bottlenecks matching the company's scale. (For mature enterprise companies, focus on engineering scalability, API governance, user activation, support triage, etc. DO NOT mention basic "emails and spreadsheets" or "manual phone calls" if the tech maturity is High).
-   - **Capability-First Tool Stack:** Recommend tools from the recommended tools list: {intelligence_context.get("recommended_tools")}. Match tooling to maturity:
+   - **Pain Points & Strong Company Wording:** Adapt and enrich the strategic focus areas (`strategic_pain_points`) from the intelligence context. Ensure they describe real operational bottlenecks matching the company's scale. 
+     * Each pain point's `description` MUST strictly follow this exact template structure:
+       "Because [company-specific business model], the main challenge is [specific operational issue]."
+       (For example, for Mensa Brands: "Because Mensa acquires and scales multiple digital-first consumer brands, the main challenge is operational complexity around real-time inventory synchronization and cross-brand reporting.")
+       Ensure the wording is highly specific to the company's actual business model. Avoid generic "emails and spreadsheets" phrasing unless it's a very small Startup.
+   - **Capability-First Tool Stack & Vendor Rotation:** Recommend tools from the recommended tools list: {intelligence_context.get("recommended_tools")}. Match tooling to maturity:
      * Enterprise: custom CLI linters, Datadog Observability APIs, Mixpanel product analytics, GitHub Actions workflows, custom AI models. Avoid no-code tools like Make.com, Zapier, WhatsApp, or Slack alerts for mature engineering firms like Postman.
      * Mid-Market: HubSpot, Salesforce, Airbyte, custom API connectors, Flowise, Odoo.
      * Startup: Make.com, Zapier, Zoho, Google Sheets, Tally.
-   - **Banish Vendor Overuse:** Do NOT overuse specific vendor tools (specifically do NOT recommend "Uniphore" unless it is the only viable fit for a conversational voice/contact center scenario). Prefer standard tools (Datadog, New Relic, Grafana, Salesforce, etc.) and explain WHY each recommendation fits this specific business.
+     * Rotate and diversify vendors/tools across the different steps. Do NOT repeatedly recommend the same vendor or tool (especially avoid repeating "Uniphore" which feels templated). Rotate vendors across these categories:
+       - Customer AI: Yellow.ai, Intercom AI, Zendesk AI
+       - Data Integration: Airbyte, Fivetran, Make.com, Zapier
+       - Analytics/BI: Power BI, Tableau, Looker
+       - ERP/Inventory: Zoho Inventory, Oracle NetSuite, Odoo
+       - Engineering Ops: GitHub Actions, Datadog, Mixpanel, Prometheus
+     * Explain WHY each tool recommendation fits this specific business.
 
 2. **Automation Score:**
    - The automation score MUST match the intelligence layer's final score: {intelligence_context.get("score_breakdown", {}).get("final_score")}.
 
-3. **Time Savings Explainability:**
+3. **Time Savings Explainability & Hard Caps (CRITICAL):**
    - The sum of the `time_wasted_hours` across all items in the `pain_points` list MUST exactly equal the `hours_wasted_weekly` value you return.
+   - **Hard Cap on Weekly Hours (Crucial for Realism):** Ground the total `hours_wasted_weekly` in the company scale.
+     * For Enterprise and Mid-Market companies: The total `hours_wasted_weekly` MUST NOT exceed 40 hours.
+     * For Startup companies: The total `hours_wasted_weekly` MUST NOT exceed 25 hours.
+     * Make the hours saved sound highly credible and realistic. Avoid over-claiming.
 
 Return ONLY valid JSON with this exact shape:
 {{
   "automation_score": {intelligence_context.get("score_breakdown", {}).get("final_score") or 80},
-  "hours_wasted_weekly": [FLOAT representing total weekly hours wasted, which must match the sum of pain point hours],
+  "hours_wasted_weekly": [FLOAT representing total weekly hours wasted, which must match the sum of pain point hours and not exceed the scale hard caps],
   "automatable_percentage": [INT based strictly on workflow complexity],
   "pain_points": [
     {{
       "title": "Specific, unique pain point tailored to their scale and process",
-      "description": "Clear explanation of the bottleneck and how it slows down their operations at their current scale",
+      "description": "Because [company-specific business model], the main challenge is [specific operational issue].",
       "time_wasted_hours": [FLOAT],
       "automation_type": "data_extraction",
       "priority": "high",

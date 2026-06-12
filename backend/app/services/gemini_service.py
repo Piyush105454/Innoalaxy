@@ -201,8 +201,8 @@ Return ONLY a valid JSON object matching this schema:
         # 2. Domain & Industry Classification & Pain Points & Tools
         detected_industry = "Business Operations"
         strategic_pain_points = [
-            {"title": "Manual Lead Entry & Follow-ups", "focus_area": "Sales Ops", "description": "Manually copy-pasting customer details and sending direct chat updates."},
-            {"title": "Spreadsheet Reporting Delays", "focus_area": "Management", "description": "Compiling reports from multiple workbooks and sheets manually weekly."}
+            {"title": "Manual Lead Entry & Follow-ups", "focus_area": "Sales Ops", "description": f"Because {business_name} generates prospects across multiple ad-networks, the main challenge is manually copy-pasting customer details and sending direct chat updates."},
+            {"title": "Spreadsheet Reporting Delays", "focus_area": "Management", "description": f"Because {business_name} needs real-time business performance metrics, the main challenge is compiling reports from multiple workbooks and sheets manually weekly."}
         ]
         recommended_tools = ["Make.com", "Zapier", "Zoho Books", "Google Sheets"]
         score_breakdown = {"potential": 30, "inefficiency": 20, "readiness": 15, "feasibility": 9, "final_score": 74}
@@ -211,16 +211,16 @@ Return ONLY a valid JSON object matching this schema:
             detected_industry = "Developer Tools / API Collaboration Platform / Enterprise SaaS"
             if scale == "Enterprise":
                 strategic_pain_points = [
-                    {"title": "Enterprise API Governance Complexity", "focus_area": "Governance", "description": "Maintaining design and security standards across thousands of APIs and teams as enterprise customer adoption scales."},
-                    {"title": "AI-Powered API Generation Competition", "focus_area": "Productivity", "description": "Rise of AI-native API development tools creating pressure to accelerate developer creation, debugging, and document mapping."},
-                    {"title": "Developer Onboarding Funnel Friction", "focus_area": "Growth & Support", "description": "Tracking developer interaction patterns to optimize self-serve onboarding and reduce user churn."}
+                    {"title": "Enterprise API Governance Complexity", "focus_area": "Governance", "description": f"Because {business_name} manages API collaboration at enterprise scale, the main challenge is maintaining design, compliance, and security standards across thousands of APIs and distributed teams."},
+                    {"title": "AI-Powered API Generation Competition", "focus_area": "Productivity", "description": f"Because {business_name} must keep pace with AI-native developer tooling, the main challenge is accelerating developer workspace onboarding, debugging, and automated documentation mapping."},
+                    {"title": "Developer Onboarding Funnel Friction", "focus_area": "Growth & Support", "description": f"Because {business_name} relies heavily on a developer-led growth funnel, the main challenge is tracking granular usage telemetry to optimize self-serve onboarding and proactively reduce user churn."}
                 ]
                 recommended_tools = ["Custom API anomaly detection models", "LLM-based API debugging assistants", "Salesforce Enterprise", "Governance automation engines"]
                 score_breakdown = {"potential": 33, "inefficiency": 19, "readiness": 17, "feasibility": 8, "final_score": 77}
             else:
                 strategic_pain_points = [
-                    {"title": "Automated Contract Testing Gate", "focus_area": "CI/CD", "description": "Integrating automated contract checks within integration pipelines to eliminate manual validation delays."},
-                    {"title": "Telemetry Collection Bottlenecks", "focus_area": "Productivity", "description": "Instrumenting and aggregating usage telemetry across APIs to identify developer drop-offs."}
+                    {"title": "Automated Contract Testing Gate", "focus_area": "CI/CD", "description": f"Because {business_name} operates rapid integration pipelines, the main challenge is integrating automated contract checks to eliminate manual validation delays."},
+                    {"title": "Telemetry Collection Bottlenecks", "focus_area": "Productivity", "description": f"Because {business_name} needs to optimize product adoption, the main challenge is instrumenting and aggregating usage telemetry across APIs to identify developer drop-offs."}
                 ]
                 recommended_tools = ["GitHub Actions", "Mixpanel product analytics", "Grafana Labs", "Prometheus"]
                 score_breakdown = {"potential": 30, "inefficiency": 18, "readiness": 12, "feasibility": 9, "final_score": 69}
@@ -229,16 +229,16 @@ Return ONLY a valid JSON object matching this schema:
             detected_industry = "FoodTech / Cloud Kitchen / Multi-brand Restaurant Operations"
             if scale == "Enterprise":
                 strategic_pain_points = [
-                    {"title": "Multi-Brand Inventory Synchronization", "focus_area": "Inventory Ops", "description": "Managing stock updates and raw material allocations across dozens of virtual brands and hundreds of kitchen hubs in real-time."},
-                    {"title": "Demand Forecasting & Wastage Prediction", "focus_area": "Production", "description": "Predicting hourly demand spikes and stock requirements using order history to minimize ingredient wastage."},
-                    {"title": "Kitchen-to-Rider SLA Monitoring", "focus_area": "Logistics", "description": "Tracking food preparation benchmarks and handoffs to hyperlocal riders to minimize delay penalties."}
+                    {"title": "Multi-Brand Inventory Synchronization", "focus_area": "Inventory Ops", "description": f"Because {business_name} acquires and scales multiple virtual brands across hundreds of kitchen hubs, the main challenge is managing real-time stock updates and raw material allocations dynamically."},
+                    {"title": "Demand Forecasting & Wastage Prediction", "focus_area": "Production", "description": f"Because {business_name} operates a high-volume multi-brand cloud kitchen network, the main challenge is predicting hourly demand spikes and order patterns to minimize ingredient wastage."},
+                    {"title": "Kitchen-to-Rider SLA Monitoring", "focus_area": "Logistics", "description": f"Because {business_name} relies on third-party delivery aggregates, the main challenge is tracking cooking benchmarks and rider handoffs to minimize delivery delay penalties."}
                 ]
                 recommended_tools = ["Custom AI forecasting engine", "SAP Supply Chain Management", "Oracle Netsuite ERP", "delivery orchestration APIs", "Swiggy/Zomato API feed integrations"]
                 score_breakdown = {"potential": 34, "inefficiency": 22, "readiness": 18, "feasibility": 8, "final_score": 82}
             else:
                 strategic_pain_points = [
-                    {"title": "Manual Order Processing from Platforms", "focus_area": "Order Ops", "description": "Re-entering delivery platform orders manually into standard POS terminals."},
-                    {"title": "Spreadsheet Inventory Reconciliation", "focus_area": "Kitchen Ops", "description": "Tracking stock usage and ingredients using manual daily sheets."}
+                    {"title": "Manual Order Processing from Platforms", "focus_area": "Order Ops", "description": f"Because {business_name} receives orders from multiple aggregators like Swiggy and Zomato, the main challenge is manually re-entering delivery platform orders into standard POS terminals."},
+                    {"title": "Spreadsheet Inventory Reconciliation", "focus_area": "Kitchen Ops", "description": f"Because {business_name} runs kitchen facilities with rapid ingredient turnover, the main challenge is tracking stock usage and raw material consumption using manual daily sheets."}
                 ]
                 recommended_tools = ["Make.com", "Zoho Inventory", "Petpooja POS API", "Google Sheets"]
                 score_breakdown = {"potential": 32, "inefficiency": 20, "readiness": 12, "feasibility": 9, "final_score": 73}
@@ -247,15 +247,15 @@ Return ONLY a valid JSON object matching this schema:
             detected_industry = "FinTech / Digital Lending / Payment Operations"
             if scale == "Enterprise":
                 strategic_pain_points = [
-                    {"title": "Custom KYC OCR Document Processing", "focus_area": "Compliance", "description": "Processing high volumes of user documentation with automated fraud detection and verification checks."},
-                    {"title": "Real-Time Transaction Risk Monitoring", "focus_area": "Risk Management", "description": "Identifying payment anomalies and failed transaction routing configurations dynamically."}
+                    {"title": "Custom KYC OCR Document Processing", "focus_area": "Compliance", "description": f"Because {business_name} handles highly regulated customer onboarding at scale, the main challenge is processing high volumes of user documentation with automated fraud detection and verification checks."},
+                    {"title": "Real-Time Transaction Risk Monitoring", "focus_area": "Risk Management", "description": f"Because {business_name} processes instant payouts and transfers, the main challenge is identifying payment anomalies and failed transaction routing configurations dynamically."}
                 ]
                 recommended_tools = ["Custom KYC AI Agents", "Signzy API integrations", "Internal ML risk analysis systems"]
                 score_breakdown = {"potential": 36, "inefficiency": 25, "readiness": 17, "feasibility": 7, "final_score": 85}
             else:
                 strategic_pain_points = [
-                    {"title": "Manual Applicant Document Collection", "focus_area": "Underwriting", "description": "Collecting applicant statements via email and manually checking criteria."},
-                    {"title": "Manual Lead Status Updates", "focus_area": "Sales", "description": "Manually moving prospective borrowers across pipeline stages."}
+                    {"title": "Manual Applicant Document Collection", "focus_area": "Underwriting", "description": f"Because {business_name} conducts manual credit assessments, the main challenge is collecting applicant statements via email and manually checking risk criteria."},
+                    {"title": "Manual Lead Status Updates", "focus_area": "Sales", "description": f"Because {business_name} handles multiple lending pipelines, the main challenge is manually moving prospective borrowers across pipeline stages."}
                 ]
                 recommended_tools = ["Make.com", "Zapier", "Docsumo", "HubSpot CRM"]
                 score_breakdown = {"potential": 30, "inefficiency": 21, "readiness": 14, "feasibility": 10, "final_score": 75}
@@ -264,15 +264,15 @@ Return ONLY a valid JSON object matching this schema:
             detected_industry = "Healthcare / Hospital Operations / Clinical Workflow Automation"
             if scale == "Enterprise":
                 strategic_pain_points = [
-                    {"title": "Patient Flow & Consultation Allocation", "focus_area": "Clinic Ops", "description": "Real-time triage and department queue allocation of outpatient volumes to maximize room utility."},
-                    {"title": "Automated EHR Parsing & Logging", "focus_area": "Data Entry", "description": "Translating physician verbal records or PDFs directly into Electronic Health Records systems."}
+                    {"title": "Patient Flow & Consultation Allocation", "focus_area": "Clinic Ops", "description": f"Because {business_name} handles highly unpredictable outpatient volumes across departments, the main challenge is real-time patient flow triage and consultation queue allocation to maximize room utility."},
+                    {"title": "Automated EHR Parsing & Logging", "focus_area": "Data Entry", "description": f"Because {business_name} requires meticulous medical documentation, the main challenge is translating physician verbal records or PDFs directly into Electronic Health Records systems."}
                 ]
                 recommended_tools = ["Custom EHR Agent Runtimes", "Enterprise HIS integration", "Advanced custom ML triage systems"]
                 score_breakdown = {"potential": 33, "inefficiency": 24, "readiness": 16, "feasibility": 8, "final_score": 81}
             else:
                 strategic_pain_points = [
-                    {"title": "Manual Patient Scheduling", "focus_area": "Reception", "description": "Booking and coordinating follow-ups via direct phone calls and diaries."},
-                    {"title": "Paper Prescription Transcription", "focus_area": "Pharmacy", "description": "Manually reading and entering prescription notes into billing systems."}
+                    {"title": "Manual Patient Scheduling", "focus_area": "Reception", "description": f"Because {business_name} manages clinician availability manually, the main challenge is booking patient follow-ups and coordinating slots via direct phone calls and diaries."},
+                    {"title": "Paper Prescription Transcription", "focus_area": "Pharmacy", "description": f"Because {business_name} issues handwritten prescriptions, the main challenge is manually reading and entering prescription notes into billing systems."}
                 ]
                 recommended_tools = ["Make.com", "Google Calendar API", "WhatsApp Business API", "Zoho CRM"]
                 score_breakdown = {"potential": 28, "inefficiency": 20, "readiness": 11, "feasibility": 10, "final_score": 69}
@@ -281,15 +281,15 @@ Return ONLY a valid JSON object matching this schema:
             detected_industry = "Logistics / Quick Commerce / Supply Chain Operations"
             if scale == "Enterprise":
                 strategic_pain_points = [
-                    {"title": "Real-Time Dispatch & Rider Allocation", "focus_area": "Dispatch", "description": "Sequencing order batches and routing riders dynamically under tight 10-minute thresholds."},
-                    {"title": "Phantom Stock Dark Store Sync", "focus_area": "Inventory", "description": "Reconciling live warehouse stock listings to prevent virtual purchases of out-of-stock items."}
+                    {"title": "Real-Time Dispatch & Rider Allocation", "focus_area": "Dispatch", "description": f"Because {business_name} operates under tight delivery SLAs, the main challenge is sequencing order batches and routing riders dynamically under tight 10-minute thresholds."},
+                    {"title": "Phantom Stock Dark Store Sync", "focus_area": "Inventory", "description": f"Because {business_name} dark stores have rapid inventory turnover, the main challenge is reconciling live warehouse stock listings to prevent virtual purchases of out-of-stock items."}
                 ]
                 recommended_tools = ["Custom Logistics ML Engine", "Enterprise WMS Integration", "Delivery SLA Orchestrator APIs"]
                 score_breakdown = {"potential": 35, "inefficiency": 26, "readiness": 18, "feasibility": 7, "final_score": 86}
             else:
                 strategic_pain_points = [
-                    {"title": "Manual Courier Platform Updates", "focus_area": "Logistics", "description": "Entering shipping details across multiple logistics provider portals manually."},
-                    {"title": "Excel Delivery Delay Tracking", "focus_area": "Operations", "description": "Manually copy-pasting delivery logs to find late dispatch patterns."}
+                    {"title": "Manual Courier Platform Updates", "focus_area": "Logistics", "description": f"Because {business_name} coordinates shipments across multiple third-party logistics portals, the main challenge is entering shipping details manually."},
+                    {"title": "Excel Delivery Delay Tracking", "focus_area": "Operations", "description": f"Because {business_name} aggregates performance metrics post-delivery, the main challenge is manually copy-pasting delivery logs to find late dispatch patterns."}
                 ]
                 recommended_tools = ["Make.com", "Zapier", "Shiprocket API", "Google Sheets"]
                 score_breakdown = {"potential": 31, "inefficiency": 22, "readiness": 13, "feasibility": 9, "final_score": 75}
@@ -334,11 +334,22 @@ Return ONLY a valid JSON object matching this schema:
             result = AuditResult.model_validate(data)
             logger.info("Audit complete — score=%d", result.automation_score)
             
+            # Post-process: enforce hard cap on weekly hours wasted based on company scale
+            scale = intel_context.get("company_scale", "Startup")
+            max_hours = 25.0 if scale == "Startup" else 40.0
+            if result.hours_wasted_weekly > max_hours:
+                logger.info("Clamping hours_wasted_weekly from %s to max %s", result.hours_wasted_weekly, max_hours)
+                ratio = max_hours / result.hours_wasted_weekly
+                for p in result.pain_points:
+                    p.time_wasted_hours = round(p.time_wasted_hours * ratio, 1)
+                actual_sum = round(sum(p.time_wasted_hours for p in result.pain_points), 1)
+                result.hours_wasted_weekly = actual_sum
+
             # 4. Base Blueprint
             result.blueprint = await self.generate_blueprint(result)
             
             # 5. Validation Agent (New Feature)
-            result.blueprint = await self.validate_and_optimize_blueprint(submission_data, result.blueprint)
+            result.blueprint = await self.validate_and_optimize_blueprint(submission_data, result.blueprint, result.hours_wasted_weekly)
             
             # Inject score breakdown
             if result.blueprint and intel_context:
@@ -348,6 +359,15 @@ Return ONLY a valid JSON object matching this schema:
         except Exception as exc:
             logger.exception("Audit completely failed, using fallback: %s", exc)
             result = self._fallback_audit(submission_data, intel_context)
+            # Enforce hard cap on fallback too
+            scale = intel_context.get("company_scale", "Startup") if intel_context else "Startup"
+            max_hours = 25.0 if scale == "Startup" else 40.0
+            if result.hours_wasted_weekly > max_hours:
+                ratio = max_hours / result.hours_wasted_weekly
+                for p in result.pain_points:
+                    p.time_wasted_hours = round(p.time_wasted_hours * ratio, 1)
+                result.hours_wasted_weekly = round(sum(p.time_wasted_hours for p in result.pain_points), 1)
+
             result.blueprint = self._fallback_blueprint(result)
             if result.blueprint and intel_context:
                 result.blueprint.score_breakdown = intel_context.get("score_breakdown")
@@ -358,7 +378,7 @@ Return ONLY a valid JSON object matching this schema:
         data = await self._generate_json_async(build_blueprint_prompt(payload))
         return BlueprintResult.model_validate(data)
 
-    async def validate_and_optimize_blueprint(self, submission_data: dict[str, Any], blueprint: BlueprintResult) -> BlueprintResult:
+    async def validate_and_optimize_blueprint(self, submission_data: dict[str, Any], blueprint: BlueprintResult, audit_hours: float) -> BlueprintResult:
         """
         The Validation Agent: researches and swaps generic tools for specific ones based on industry.
         """
@@ -376,15 +396,26 @@ INSTRUCTIONS:
 1. Review the 'tools' suggested in the 'steps' and the 'integrations' array. Generic tools like 'Zapier', 'Make', or 'Google ADK' might be too broad.
 2. Replace or enhance these with highly specific, industry-best tools (e.g., instead of just CRM, specify Salesforce or HubSpot for tech, or specialized tools for healthcare/real estate/etc).
 3. Validate that the flow makes logical sense for their process and provides the best outcome. Ensure no outdated tools like TradeGecko or unrealistic ones like DHL API for cloud kitchens are present.
-4. Output ONLY the updated blueprint in exactly the same JSON format. No markdown blocks, just pure JSON matching the original schema structure.
+4. Rotate and diversify vendors/tools across steps so they don't feel templated or repetitive. Especially avoid using "Uniphore" repeatedly or for non-voice tasks. For other components, use standard options like:
+   - Customer AI: Yellow.ai, Intercom AI, Zendesk AI
+   - Data Integration: Airbyte, Fivetran, Make.com, Zapier
+   - Analytics/BI: Power BI, Tableau, Looker
+   - ERP/Inventory: Zoho Inventory, Oracle NetSuite, Odoo
+   - Engineering Ops: GitHub Actions, Datadog, Mixpanel, Prometheus
+5. Ensure 'hours_saved_weekly' does not over-claim. It must not exceed {audit_hours} hours.
+6. Output ONLY the updated blueprint in exactly the same JSON format. No markdown blocks, just pure JSON matching the original schema structure.
 """
         try:
             data = await self._generate_json_async(prompt)
             optimized_bp = BlueprintResult.model_validate(data)
+            if optimized_bp.hours_saved_weekly > audit_hours:
+                optimized_bp.hours_saved_weekly = round(audit_hours * 0.85, 1)
             logger.info("Validation Agent successfully optimized the blueprint tools!")
             return optimized_bp
         except Exception as exc:
             logger.error("Validation Agent failed, using original blueprint: %s", exc)
+            if blueprint.hours_saved_weekly > audit_hours:
+                blueprint.hours_saved_weekly = round(audit_hours * 0.85, 1)
             return blueprint
 
     async def generate_message(self, lead_data: dict[str, Any], context: str) -> str:
