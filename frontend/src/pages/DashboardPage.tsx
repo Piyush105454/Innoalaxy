@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { Check, Search, Download, X, Zap } from "lucide-react";
-import { getSubmission, listUserSubmissions, updateSubmission, deleteSubmission } from "../lib/api";
+import { getSubmission, listUserSubmissions, listSubmissions, updateSubmission, deleteSubmission } from "../lib/api";
 import type { SubmissionDetail, SubmissionSummary } from "../lib/types";
 import { Button } from "../components/ui/Button";
 import { useAuth, SignInButton, SignedIn, SignedOut } from "@clerk/clerk-react";
@@ -19,7 +19,7 @@ export function DashboardPage() {
     try {
       const token = await getToken();
       if (!token) return;
-      const data = await listUserSubmissions(token);
+      const data = await listSubmissions();
       setRows(data);
     } catch (e) {
       console.error("Failed to load submissions:", e);
