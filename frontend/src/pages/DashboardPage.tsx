@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Check, Search, Download, X, Zap } from "lucide-react";
+import { Check, Search, Download, X, Zap, CheckCircle } from "lucide-react";
 import { getSubmission, listUserSubmissions, listSubmissions, updateSubmission, deleteSubmission } from "../lib/api";
 import type { SubmissionDetail, SubmissionSummary } from "../lib/types";
 import { Button } from "../components/ui/Button";
 import { useAuth, SignInButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 import html2pdf from "html2pdf.js";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export function DashboardPage() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
@@ -175,15 +177,39 @@ export function DashboardPage() {
                   </div>
 
                   {/* AI Summary */}
-                  {selected.audit_result && (
+                  {selected.agent_runs && selected.agent_runs.length > 0 && selected.agent_runs[0].output ? (
+                    <div className="mt-8">
+                      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-line">
+                        <CheckCircle className="text-emerald-500" size={28} />
+                        <h3 className="font-bold text-2xl text-ink font-['DM_Sans']">Final Optimization Plan</h3>
+                      </div>
+                      <div className="text-slate-700 leading-relaxed text-lg bg-white">
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            h1: ({node, ...props}) => <h1 className="text-3xl font-extrabold mt-8 mb-4 text-ink font-['DM_Sans']" {...props} />,
+                            h2: ({node, ...props}) => <h2 className="text-2xl font-bold mt-8 mb-4 text-ink border-b border-line pb-2 font-['DM_Sans']" {...props} />,
+                            h3: ({node, ...props}) => <h3 className="text-xl font-bold mt-6 mb-3 text-ink" {...props} />,
+                            p: ({node, ...props}) => <p className="mb-5 text-slate-700 leading-relaxed text-lg" {...props} />,
+                            ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-5 text-slate-700 space-y-2 text-lg" {...props} />,
+                            ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-5 text-slate-700 space-y-2 text-lg font-semibold" {...props} />,
+                            li: ({node, ...props}) => <li className="pl-1" {...props} />,
+                            strong: ({node, ...props}) => <strong className="font-bold text-ink" {...props} />,
+                            a: ({node, ...props}) => <a className="text-primary font-semibold hover:underline" {...props} />
+                          }}
+                        >
+                          {selected.agent_runs[0].output}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  ) : selected.audit_result && (
                     <>
-                      <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-100">
+                      <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-100 mt-8">
                           <h3 className="font-semibold text-lg mb-3 text-emerald-800 flex items-center gap-2"><Search size={18}/> Innoalaxy AI Analysis</h3>
                           <p className="text-emerald-900 leading-relaxed font-medium">{selected.audit_result.summary}</p>
                           <p className="text-sm mt-4 text-emerald-700/80 italic">{selected.audit_result.industry_context}</p>
                       </div>
 
-                      {/* Blueprint Timeline */}
                       {selected.audit_result.blueprint && (
                           <div className="mt-8">
                               <h3 className="font-bold text-2xl text-ink font-['DM_Sans'] mb-6">Optimized Blueprint & Tooling</h3>
@@ -204,18 +230,6 @@ export function DashboardPage() {
                               </div>
                           </div>
                       )}
-
-                      {/* ROI Metrics */}
-                      <div className="grid grid-cols-2 gap-6 mt-8 pt-6 border-t border-line">
-                          <div className="rounded-xl p-6 bg-blue-50 border border-blue-100 text-center">
-                              <div className="text-sm font-bold text-blue-600 uppercase tracking-wide">Hours Saved Weekly</div>
-                              <div className="text-4xl font-extrabold text-blue-900 mt-2">{selected.audit_result.blueprint?.hours_saved_weekly || selected.audit_result.hours_wasted_weekly}</div>
-                          </div>
-                          <div className="rounded-xl p-6 bg-purple-50 border border-purple-100 text-center">
-                              <div className="text-sm font-bold text-purple-600 uppercase tracking-wide">Estimated Value / Cost</div>
-                              <div className="text-3xl font-extrabold text-purple-900 mt-2">{selected.audit_result.blueprint?.price_range || "TBD"}</div>
-                          </div>
-                      </div>
                     </>
                   )}
               </div>

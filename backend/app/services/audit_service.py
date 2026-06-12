@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.db_models import AuditResultDB, Contact, Submission
-from app.models.schemas import AuditResult, SubmissionDetail, SubmissionRequest, SubmissionSummary
+from app.models.schemas import AuditResult, SubmissionDetail, SubmissionRequest, SubmissionSummary, AgentRunResult
 from app.services.gemini_service import GeminiService
 
 
@@ -105,7 +105,16 @@ class AuditService:
             process_description=row.process_description,
             internal_notes=row.internal_notes,
             audit_result=self.get_audit(row.id) if audit else None,
-            agent_runs=[],
+            agent_runs=[
+                AgentRunResult(
+                    run_id=r.id,
+                    submission_id=r.submission_id,
+                    agent_type=r.agent_type,
+                    status=r.status, # type: ignore
+                    logs=r.logs, # type: ignore
+                    output=r.output,
+                ) for r in row.agent_runs
+            ],
         )
 
     def update_status(self, submission_id: UUID, status: str, notes: str | None = None) -> SubmissionDetail | None:
