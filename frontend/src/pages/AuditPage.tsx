@@ -19,7 +19,8 @@ const loadingLines = ["Reading workflow context", "Mapping manual handoffs", "Es
 export function AuditPage() {
   const { getToken, isSignedIn, isLoaded } = useAuth();
   const store = useAuditStore();
-  const [businessName, setBusinessName] = useState("");
+
+  const [businessName, setBusinessName] = useState(() => localStorage.getItem("audit_business_name") || "");
   const [industry, setIndustry] = useState(industries[0]);
   const [teamSize, setTeamSize] = useState(teamSizes[1]);
   const [description, setDescription] = useState("");

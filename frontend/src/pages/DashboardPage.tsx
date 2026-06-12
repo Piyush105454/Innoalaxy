@@ -1,20 +1,17 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DashboardLayout } from "../components/layout/DashboardLayout";
-import { Check, Search, Download, X, Zap, CheckCircle } from "lucide-react";
-import { getSubmission, listUserSubmissions, listSubmissions, updateSubmission, deleteSubmission } from "../lib/api";
-import type { SubmissionDetail, SubmissionSummary } from "../lib/types";
+import { Search } from "lucide-react";
+import { getSubmission, listUserSubmissions } from "../lib/api";
+import type { SubmissionSummary } from "../lib/types";
+import { useAuth, SignInButton } from "@clerk/clerk-react";
+import { useAuditStore } from "../store/auditStore";
 import { Button } from "../components/ui/Button";
-import { useAuth, SignInButton, SignedIn, SignedOut } from "@clerk/clerk-react";
-import html2pdf from "html2pdf.js";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 export function DashboardPage() {
   const { getToken, isLoaded, isSignedIn } = useAuth();
   const [rows, setRows] = useState<SubmissionSummary[]>([]);
-  const [selected, setSelected] = useState<SubmissionDetail | null>(null);
   const [query, setQuery] = useState("");
-  const printRef = useRef<HTMLDivElement>(null);
+  const store = useAuditStore();
 
   async function load() {
     if (!isSignedIn) return;
@@ -23,59 +20,64 @@ export function DashboardPage() {
       if (!token) return;
       const data = await listUserSubmissions(token);
       setRows(data);
-    } catch (e) {
-      console.error("Failed to load submissions:", e);
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  useEffect(() => { 
+  useEffect(() => {
     if (isLoaded && isSignedIn) {
-      void load(); 
+      load();
     }
   }, [isLoaded, isSignedIn]);
 
-  const filtered = useMemo(() => rows.filter((row) => row.business_name.toLowerCase().includes(query.toLowerCase()) || row.industry.toLowerCase().includes(query.toLowerCase())), [rows, query]);
-  const totalHours = rows.reduce((sum, row) => sum + (row.hours_wasted_weekly ?? 0), 0);
-  const avgScore = rows.length ? Math.round(rows.reduce((sum, row) => sum + (row.automation_score ?? 0), 0) / rows.length) : 0;
+  const filtered = useMemo(() => {
+    if (!query) return rows;
+    const q = query.toLowerCase();
+    return rows.filter((r) => r.business_name.toLowerCase().includes(q) || r.industry.toLowerCase().includes(q));
+  }, [rows, query]);
 
-  async function setStatus(status: string) {
-    if (!selected) return;
-    const updated = await updateSubmission(selected.id, status, selected.internal_notes);
-    setSelected(updated);
-    await load();
-  }
+  const avgScore = useMemo(() => {
+    const withScore = rows.filter((r) => r.automation_score != null);
+    if (withScore.length === 0) return 0;
+    return Math.round(withScore.reduce((a, b) => a + (b.automation_score || 0), 0) / withScore.length);
+  }, [rows]);
 
-  async function handleDelete() {
-    if (!selected) return;
-    if (!confirm("Are you sure you want to delete this submission?")) return;
-    await deleteSubmission(selected.id);
-    setSelected(null);
-    await load();
-  }
+  const totalHours = useMemo(() => {
+    return rows.reduce((a, b) => a + (b.hours_wasted_weekly || 0), 0);
+  }, [rows]);
 
-  const handleDownloadPdf = async () => {
-    if (!printRef.current) return;
-    const element = printRef.current;
-    const opt = {
-      margin: 0.5,
-      filename: `${selected?.business_name || 'Innoalaxy'}_Audit_Plan.pdf`,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
-    };
-    html2pdf().set(opt).from(element).save();
+  const handleRowClick = async (id: string) => {
+    const detail = await getSubmission(id);
+    if (!detail) return;
+    
+    store.setAuditResult(detail.audit_result);
+    
+    if (detail.agent_runs && detail.agent_runs.length > 0) {
+      store.setAgentOutput(detail.agent_runs[0].output);
+      store.setAgentLogs(detail.agent_runs[0].logs);
+      store.setAgentRunId(detail.agent_runs[0].run_id);
+      store.setStep(4);
+    } else {
+      store.setAgentOutput("");
+      store.setAgentLogs([]);
+      store.setAgentRunId(null);
+      store.setStep(2);
+    }
+    
+    localStorage.setItem("audit_business_name", detail.business_name);
+    window.location.href = "/audit";
   };
 
   if (!isLoaded) return <div className="p-8 text-center">Loading...</div>;
 
   if (!isSignedIn) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
-        <div className="w-full max-w-sm rounded-lg border border-line bg-white p-8 shadow-sm text-center">
-          <h1 className="font-['DM_Sans'] text-2xl font-bold text-ink mb-2">Welcome to your Dashboard</h1>
-          <p className="text-slate-600 mb-6">Please log in to view your past AI audits and chat history.</p>
-          <SignInButton mode="modal" forceRedirectUrl="/dashboard">
-            <Button className="w-full justify-center">Login / Sign Up</Button>
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="text-center">
+          <h1 className="mb-4 text-2xl font-bold">Please sign in to view your dashboard</h1>
+          <SignInButton mode="modal">
+            <Button>Sign In</Button>
           </SignInButton>
         </div>
       </div>
@@ -115,7 +117,7 @@ export function DashboardPage() {
                 </thead>
                 <tbody>
                   {filtered.map((row) => (
-                    <tr key={row.id} className="cursor-pointer border-t border-line hover:bg-slate-50 transition-colors" onClick={async () => setSelected(await getSubmission(row.id))}>
+                    <tr key={row.id} className="cursor-pointer border-t border-line hover:bg-slate-50 transition-colors" onClick={() => handleRowClick(row.id)}>
                       <td className="p-4 font-bold text-ink">{row.business_name}</td>
                       <td className="p-4 text-slate-600">{row.industry}</td>
                       <td className="p-4 font-semibold text-primary">{row.automation_score ?? "-"}%</td>
@@ -127,119 +129,6 @@ export function DashboardPage() {
           </div>
         </div>
       </section>
-
-      {/* Full Screen Modal View for Selected Submission */}
-      {selected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 sm:p-6 md:p-12 backdrop-blur-sm">
-          <div className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-line bg-white px-6 py-4">
-              <h2 className="font-['DM_Sans'] text-2xl font-bold text-ink truncate mr-4">AI Audit Plan: {selected.business_name}</h2>
-              <div className="flex gap-3">
-                <Button onClick={handleDownloadPdf} className="bg-slate-800 text-white hover:bg-slate-900">
-                  <Download size={16} className="mr-2" /> Export PDF
-                </Button>
-                <button onClick={() => setSelected(null)} className="rounded-full p-2 hover:bg-slate-100 text-slate-500 transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-            </div>
-
-            {/* Scrollable Content (This part gets printed to PDF) */}
-            <div className="flex-1 overflow-y-auto bg-slate-50/50">
-              <div ref={printRef} className="p-8 space-y-8 bg-white m-0 sm:m-4 rounded-xl border border-line">
-                  
-                  {/* Print Header */}
-                  <div className="flex justify-between items-start border-b border-line pb-6">
-                      <div>
-                          <h1 className="text-4xl font-bold text-ink font-['DM_Sans'] mb-2">{selected.business_name}</h1>
-                          <p className="text-slate-500 font-medium">{selected.industry} &nbsp;&bull;&nbsp; {selected.team_size}</p>
-                      </div>
-                      {selected.audit_result && (
-                          <div className="text-right bg-primary/5 px-6 py-3 rounded-xl border border-primary/10">
-                              <div className="text-5xl font-extrabold text-primary">{selected.audit_result.automation_score}%</div>
-                              <div className="text-sm text-primary font-bold tracking-wide uppercase mt-1">Automation Score</div>
-                          </div>
-                      )}
-                  </div>
-
-                  {/* Process Analyzed */}
-                  <div>
-                      <h3 className="font-semibold text-lg text-slate-800 mb-2 flex items-center gap-2"><Check size={18} className="text-primary"/> Current Process</h3>
-                      <p className="text-slate-600 whitespace-pre-wrap leading-relaxed bg-slate-50 p-4 rounded-lg border border-line">{selected.process_description}</p>
-                  </div>
-
-                  {/* AI Summary */}
-                  {selected.agent_runs && selected.agent_runs.length > 0 && selected.agent_runs[0].output ? (
-                    <div className="mt-8">
-                      <div className="flex items-center gap-3 mb-6 pb-4 border-b border-line">
-                        <CheckCircle className="text-emerald-500" size={28} />
-                        <h3 className="font-bold text-2xl text-ink font-['DM_Sans']">Final Optimization Plan</h3>
-                      </div>
-                      <div className="text-slate-700 leading-relaxed text-lg bg-white">
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            h1: ({node, ...props}) => <h1 className="text-3xl font-extrabold mt-8 mb-4 text-ink font-['DM_Sans']" {...props} />,
-                            h2: ({node, ...props}) => <h2 className="text-2xl font-bold mt-8 mb-4 text-ink border-b border-line pb-2 font-['DM_Sans']" {...props} />,
-                            h3: ({node, ...props}) => <h3 className="text-xl font-bold mt-6 mb-3 text-ink" {...props} />,
-                            p: ({node, ...props}) => <p className="mb-5 text-slate-700 leading-relaxed text-lg" {...props} />,
-                            ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-5 text-slate-700 space-y-2 text-lg" {...props} />,
-                            ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-5 text-slate-700 space-y-2 text-lg font-semibold" {...props} />,
-                            li: ({node, ...props}) => <li className="pl-1" {...props} />,
-                            strong: ({node, ...props}) => <strong className="font-bold text-ink" {...props} />,
-                            a: ({node, ...props}) => <a className="text-primary font-semibold hover:underline" {...props} />
-                          }}
-                        >
-                          {selected.agent_runs[0].output}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
-                  ) : selected.audit_result && (
-                    <>
-                      <div className="bg-emerald-50 rounded-xl p-6 border border-emerald-100 mt-8">
-                          <h3 className="font-semibold text-lg mb-3 text-emerald-800 flex items-center gap-2"><Search size={18}/> Innoalaxy AI Analysis</h3>
-                          <p className="text-emerald-900 leading-relaxed font-medium">{selected.audit_result.summary}</p>
-                          <p className="text-sm mt-4 text-emerald-700/80 italic">{selected.audit_result.industry_context}</p>
-                      </div>
-
-                      {selected.audit_result.blueprint && (
-                          <div className="mt-8">
-                              <h3 className="font-bold text-2xl text-ink font-['DM_Sans'] mb-6">Optimized Blueprint & Tooling</h3>
-                              <div className="grid gap-4">
-                                  {selected.audit_result.blueprint.steps.map((step, idx) => (
-                                      <div key={idx} className="flex gap-5 p-5 rounded-xl border border-slate-200 bg-white shadow-sm">
-                                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg border border-primary/20">{idx + 1}</div>
-                                          <div>
-                                              <h4 className="font-bold text-lg text-ink">{step.title}</h4>
-                                              <p className="text-slate-600 mt-2 leading-relaxed">{step.description}</p>
-                                              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm font-bold text-slate-700 border border-slate-200">
-                                                  <Zap size={14} className="text-amber-500" />
-                                                  Tool: {step.tool}
-                                              </div>
-                                          </div>
-                                      </div>
-                                  ))}
-                              </div>
-                          </div>
-                      )}
-                    </>
-                  )}
-              </div>
-            </div>
-
-            {/* Internal Notes Display (Read-Only) */}
-            {selected.internal_notes && (
-              <div className="bg-slate-100 p-6 border-t border-line shadow-inner">
-                  <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-2">Admin Notes</h4>
-                  <p className="text-slate-700 text-sm whitespace-pre-wrap">{selected.internal_notes}</p>
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
     </DashboardLayout>
   );
 }
