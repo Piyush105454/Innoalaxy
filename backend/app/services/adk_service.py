@@ -177,6 +177,8 @@ class InnoalaxyAgent:
                     raise e
             
             # Handle tool calls if any
+            if not response.choices:
+                raise RuntimeError("No response choices returned from AI model.")
             message = response.choices[0].message
             if message.tool_calls:
                 messages.append(message)
@@ -199,7 +201,10 @@ class InnoalaxyAgent:
                     model=model_name,
                     messages=messages
                 )
-                output = final_response.choices[0].message.content or ""
+                if final_response.choices and len(final_response.choices) > 0:
+                    output = final_response.choices[0].message.content or ""
+                else:
+                    output = "Agent completed tool execution but did not generate a summary."
             else:
                 output = message.content or ""
 
@@ -209,7 +214,6 @@ class InnoalaxyAgent:
         except Exception as exc:
             error_str = mask_api_keys(str(exc))
             logger.exception("AgentRun %s failed: %s", self.run_id, error_str)
-            run.status = "failed"
             
             friendly_error = (
                 "**Offline RAG Analysis / Fallback Mode:**\n\n"
