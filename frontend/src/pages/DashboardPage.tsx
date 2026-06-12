@@ -61,7 +61,7 @@ export function DashboardPage() {
         <div className="w-full max-w-sm rounded-lg border border-line bg-white p-8 shadow-sm text-center">
           <h1 className="font-['DM_Sans'] text-2xl font-bold text-ink mb-2">Welcome to your Dashboard</h1>
           <p className="text-slate-600 mb-6">Please log in to view your past AI audits and chat history.</p>
-          <SignInButton mode="modal">
+          <SignInButton mode="modal" forceRedirectUrl="/dashboard">
             <Button className="w-full justify-center">Login / Sign Up</Button>
           </SignInButton>
         </div>

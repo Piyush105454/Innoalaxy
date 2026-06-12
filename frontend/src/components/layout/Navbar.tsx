@@ -90,7 +90,7 @@ export function Navbar() {
           </button>
           
           <SignedOut>
-            <SignInButton mode="modal">
+            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
               <button className="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
                 Login
               </button>
