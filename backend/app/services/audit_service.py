@@ -13,8 +13,9 @@ class AuditService:
         self.db = db
         self.gemini = GeminiService()
 
-    async def create_audit(self, request: SubmissionRequest, file_name: str | None, file_text: str | None) -> AuditResult:
+    async def create_audit(self, request: SubmissionRequest, file_name: str | None, file_text: str | None, user_id: str | None = None) -> AuditResult:
         submission = Submission(
+            user_id=user_id,
             business_name=request.business_name,
             industry=request.industry,
             team_size=request.team_size,
@@ -65,6 +66,13 @@ class AuditService:
 
     def list_submissions(self) -> list[SubmissionSummary]:
         rows = self.db.execute(select(Submission).order_by(Submission.created_at.desc())).scalars().all()
+        return self._format_summaries(rows)
+
+    def list_user_submissions(self, user_id: str) -> list[SubmissionSummary]:
+        rows = self.db.execute(select(Submission).where(Submission.user_id == user_id).order_by(Submission.created_at.desc())).scalars().all()
+        return self._format_summaries(rows)
+
+    def _format_summaries(self, rows) -> list[SubmissionSummary]:
         summaries = []
         for row in rows:
             audit = row.audit_result

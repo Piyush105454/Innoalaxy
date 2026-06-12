@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.models.schemas import APIResponse, AuditResult, SubmissionRequest
 from app.services.audit_service import AuditService
 from app.services.whatsapp_service import WhatsAppService
+from app.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/audit", tags=["audit"])
 
@@ -34,6 +35,7 @@ async def analyze_audit(
     whatsapp_number: Annotated[str | None, Form()] = None,
     file: UploadFile | None = File(default=None),
     db: Session = Depends(get_db),
+    user_id: str | None = Depends(get_current_user),
 ) -> APIResponse[AuditResult]:
     request = SubmissionRequest(
         business_name=business_name,
@@ -45,13 +47,21 @@ async def analyze_audit(
         whatsapp_number=whatsapp_number or None,
     )
     file_name, file_text = await _read_upload(file)
-    result = await AuditService(db).create_audit(request, file_name, file_text)
+    result = await AuditService(db).create_audit(request, file_name, file_text, user_id)
     background_tasks.add_task(
         WhatsAppService().notify_piyush,
         request.model_dump(),
         result.model_dump(mode="json"),
     )
     return APIResponse(data=result, message="Audit generated")
+
+
+@router.get("/history")
+def get_user_history(db: Session = Depends(get_db), user_id: str | None = Depends(get_current_user)):
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    summaries = AuditService(db).list_user_submissions(user_id)
+    return APIResponse(data=summaries)
 
 
 @router.get("/{submission_id}", response_model=APIResponse[AuditResult])

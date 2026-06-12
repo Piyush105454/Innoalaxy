@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-react";
 
 export function Navbar() {
   const [dark, setDark] = useState(false);
@@ -87,12 +88,28 @@ export function Navbar() {
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
+                Login
+              </button>
+            </SignInButton>
+          </SignedOut>
+
           <a
             href="/audit"
             className="hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-sm shadow-blue-200"
           >
             Get Started
           </a>
+          
+          <SignedIn>
+            <div className="ml-2">
+              <UserButton />
+            </div>
+          </SignedIn>
+
           <button
             onClick={() => setMobileOpen((o) => !o)}
             className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"

@@ -1,9 +1,11 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState, useMemo } from "react";
+import { useAuth, SignInButton } from "@clerk/clerk-react";
 import { motion } from "framer-motion";
 import { ArrowRight, MessageCircle, CheckCircle, FileText, Play, RotateCcw, Upload } from "lucide-react";
 import { analyzeProcess, getAgentStatus, runAgentDemo } from "../lib/api";
 import { useAuditStore } from "../store/auditStore";
 import { Navbar } from "../components/layout/Navbar";
+import { DashboardLayout } from "../components/layout/DashboardLayout";
 import { Button } from "../components/ui/Button";
 import { DeepResearchTree } from "../components/DeepResearchTree";
 import ReactMarkdown from "react-markdown";
@@ -14,6 +16,7 @@ const teamSizes = ["1-5", "6-15", "16-50", "51-200", "200+"];
 const loadingLines = ["Reading workflow context", "Mapping manual handoffs", "Estimating hours wasted", "Drafting automation blueprint"];
 
 export function AuditPage() {
+  const { getToken, isSignedIn, isLoaded } = useAuth();
   const store = useAuditStore();
   const [businessName, setBusinessName] = useState("");
   const [industry, setIndustry] = useState(industries[0]);
@@ -22,6 +25,19 @@ export function AuditPage() {
   const [email, setEmail] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState("");
+  const [limitReached, setLimitReached] = useState(false);
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      const count = parseInt(localStorage.getItem("free_audit_count") || "0", 10);
+      if (count >= 2) {
+        setLimitReached(true);
+      }
+    } else {
+      setLimitReached(false);
+    }
+  }, [isSignedIn]);
+
   const loadingText = useMemo(() => loadingLines[Math.min(store.currentStep - 1, loadingLines.length - 1)], [store.currentStep]);
 
   async function submit(event: FormEvent) {
@@ -31,6 +47,17 @@ export function AuditPage() {
       setError("Describe the process in at least 50 characters.");
       return;
     }
+
+    // Check free limit
+    if (!isSignedIn) {
+      const count = parseInt(localStorage.getItem("free_audit_count") || "0", 10);
+      if (count >= 2) {
+        setLimitReached(true);
+        return;
+      }
+      localStorage.setItem("free_audit_count", (count + 1).toString());
+    }
+
     const form = new FormData();
     form.append("business_name", businessName || "Innoalaxy prospect");
     form.append("industry", industry);
@@ -41,7 +68,8 @@ export function AuditPage() {
     store.setLoadingAudit(true);
     store.setStep(2);
     try {
-      const result = await analyzeProcess(form);
+      const token = await getToken();
+      const result = await analyzeProcess(form, token || undefined);
       store.setAuditResult(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Audit failed");
@@ -54,14 +82,16 @@ export function AuditPage() {
   async function runDemo() {
     if (!store.auditResult?.submission_id) return;
     store.setLoadingAgent(true);
-    const { run_id } = await runAgentDemo(store.auditResult.submission_id);
+    const token = await getToken();
+    const { run_id } = await runAgentDemo(store.auditResult.submission_id, token || undefined);
     store.setAgentRunId(run_id);
   }
 
   useEffect(() => {
     if (!store.agentRunId) return;
     const id = window.setInterval(async () => {
-      const status = await getAgentStatus(store.agentRunId!);
+      const token = await getToken();
+      const status = await getAgentStatus(store.agentRunId!, token || undefined);
       store.setAgentLogs(status.logs);
       store.setAgentOutput(status.output);
       if (status.status === "completed" || status.status === "failed") {
@@ -70,18 +100,31 @@ export function AuditPage() {
       }
     }, 2000);
     return () => window.clearInterval(id);
-  }, [store.agentRunId]);
+  }, [store.agentRunId, getToken]);
 
-  return (
-    <main className="min-h-screen bg-slate-50 text-ink">
-      <Navbar />
+  if (!isLoaded) return null;
+
+  const content = (
+    <>
+      {!isSignedIn && <Navbar />}
       <div className="mx-auto max-w-5xl px-4 py-8">
         <div className="mb-8 grid grid-cols-4 gap-2">
           {[1, 2, 3, 4].map((step) => (
             <div key={step} className={`h-2 rounded-full ${store.currentStep >= step ? "bg-primary" : "bg-slate-200"}`} />
           ))}
         </div>
-        {store.currentStep === 1 && (
+        
+        {limitReached && (
+          <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-6 text-center">
+            <h2 className="mb-2 text-xl font-bold text-blue-900">Free Audit Limit Reached</h2>
+            <p className="mb-4 text-blue-800">You've used up your 2 free workflow audits. Sign up or log in to run unlimited AI analyses and save your history!</p>
+            <SignInButton mode="modal">
+              <Button>Login / Sign Up</Button>
+            </SignInButton>
+          </div>
+        )}
+
+        {!limitReached && store.currentStep === 1 && (
           <motion.form initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} onSubmit={submit} className="rounded-lg border border-line bg-white p-6">
             <h1 className="font-['DM_Sans'] text-3xl font-bold">Get your AI workflow audit</h1>
             <p className="mt-2 text-slate-600">Describe one repetitive process. We will estimate what can be automated and how.</p>
@@ -190,6 +233,20 @@ export function AuditPage() {
           </motion.section>
         )}
       </div>
+    </>
+  );
+
+  if (isSignedIn) {
+    return (
+      <DashboardLayout activePath="/audit">
+        {content}
+      </DashboardLayout>
+    );
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-50 text-ink">
+      {content}
     </main>
   );
 }

@@ -37,6 +37,7 @@ class Submission(Base):
     __tablename__ = "submissions"
 
     id: Mapped[uuid.UUID] = mapped_column(GUID(), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
     business_name: Mapped[str] = mapped_column(String(160))
     industry: Mapped[str] = mapped_column(String(120))
     team_size: Mapped[str] = mapped_column(String(60))

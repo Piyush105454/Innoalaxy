@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     twilio_auth_token: str | None = None
     twilio_whatsapp_from: str = "whatsapp:+14155238886"
     whatsapp_demo_mode: bool = True
+    clerk_secret_key: str | None = None
 
 
 @lru_cache

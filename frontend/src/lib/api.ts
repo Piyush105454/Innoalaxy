@@ -3,11 +3,17 @@ import type { AgentStatus, AuditResult, SubmissionDetail, SubmissionSummary } fr
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://localhost:8000" : "https://innoalaxy-13277279334.asia-south2.run.app");
 const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY ?? "change-me";
 
-async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 25000): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 25000, token?: string): Promise<T> {
   const controller = new AbortController();
   const id = window.setTimeout(() => controller.abort(new Error("The AI is taking longer than expected to respond. Please try again.")), timeoutMs);
+  
+  const headers = { ...options.headers } as Record<string, string>;
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   try {
-    const res = await fetch(`${API_BASE}${path}`, { ...options, signal: controller.signal });
+    const res = await fetch(`${API_BASE}${path}`, { ...options, headers, signal: controller.signal });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(json.detail ?? json.message ?? `Request failed: ${res.status}`);
@@ -18,29 +24,32 @@ async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 2
   }
 }
 
-export function analyzeProcess(formData: FormData): Promise<AuditResult> {
-  // Give the LLM up to 120 seconds to do the deep business audit
-  return request<AuditResult>("/audit/analyze", { method: "POST", body: formData }, 120000);
+export function analyzeProcess(formData: FormData, token?: string): Promise<AuditResult> {
+  return request<AuditResult>("/audit/analyze", { method: "POST", body: formData }, 120000, token);
 }
 
-export function getAuditResult(submissionId: string): Promise<AuditResult> {
-  return request<AuditResult>(`/audit/${submissionId}`);
+export function getAuditResult(submissionId: string, token?: string): Promise<AuditResult> {
+  return request<AuditResult>(`/audit/${submissionId}`, {}, 25000, token);
 }
 
-export function runAgentDemo(submissionId: string): Promise<{ run_id: string }> {
+export function listUserSubmissions(token: string): Promise<SubmissionSummary[]> {
+  return request<SubmissionSummary[]>("/audit/history", {}, 25000, token);
+}
+
+export function runAgentDemo(submissionId: string, token?: string): Promise<{ run_id: string }> {
   return request<{ run_id: string }>("/agent/run", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ submission_id: submissionId, agent_type: "business_optimization", demo_mode: true })
-  });
+  }, 25000, token);
 }
 
-export function getAgentStatus(runId: string): Promise<AgentStatus> {
-  return request<AgentStatus>(`/agent/${runId}/status`);
+export function getAgentStatus(runId: string, token?: string): Promise<AgentStatus> {
+  return request<AgentStatus>(`/agent/${runId}/status`, {}, 25000, token);
 }
 
-export function getAgentOutput(runId: string): Promise<{ output: string; status: string }> {
-  return request<{ output: string; status: string }>(`/agent/${runId}/output`);
+export function getAgentOutput(runId: string, token?: string): Promise<{ output: string; status: string }> {
+  return request<{ output: string; status: string }>(`/agent/${runId}/output`, {}, 25000, token);
 }
 
 export function listSubmissions(): Promise<SubmissionSummary[]> {
