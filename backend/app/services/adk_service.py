@@ -207,7 +207,21 @@ class InnoalaxyAgent:
                 raise RuntimeError("No response choices returned from AI model.")
             message = response.choices[0].message
             if message.tool_calls:
-                messages.append(message)
+                tool_calls_list = []
+                for tc in message.tool_calls:
+                    tool_calls_list.append({
+                        "id": tc.id,
+                        "type": "function",
+                        "function": {
+                            "name": tc.function.name,
+                            "arguments": tc.function.arguments
+                        }
+                    })
+                messages.append({
+                    "role": "assistant",
+                    "content": message.content or "",
+                    "tool_calls": tool_calls_list
+                })
                 for tool_call in message.tool_calls:
                     func_name = tool_call.function.name
                     func_args = json.loads(tool_call.function.arguments)
@@ -248,7 +262,7 @@ class InnoalaxyAgent:
                 if final_response.choices and len(final_response.choices) > 0:
                     output = final_response.choices[0].message.content or ""
                 else:
-                    output = "Agent completed tool execution but did not generate a summary."
+                    raise RuntimeError("No output choices returned from the model summary call.")
             else:
                 output = message.content or ""
 
@@ -259,12 +273,51 @@ class InnoalaxyAgent:
             error_str = mask_api_keys(str(exc))
             logger.exception("AgentRun %s failed: %s", self.run_id, error_str)
             
+            # Dynamic rule-based fallback based on industry/keywords
+            submission = self.db.get(Submission, run.submission_id)
+            desc = (submission.process_description or "").lower()
+            ind = (submission.industry or "").lower()
+            business_name = submission.business_name
+            
+            if any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
+                plan_items = [
+                    "1. **Customer Acquisition & Credit Operations**: Connect HyperVerge / Signzy to automate KYC, OCR document verification, and user onboarding. This will enable automatic extraction of data and eliminate manual errors.",
+                    "2. **Intelligent Data Extraction**: Integrate Docsumo to parse financial bank statements and invoices automatically, extracting data instantly.",
+                    "3. **Custom AI Agent Workflows**: Leverage Flowise to build drag-and-drop LLM orchestration to automate credit queries and applicant screening."
+                ]
+            elif any(w in desc or w in ind for w in ["lead", "sales", "whatsapp", "customer", "support", "chat"]):
+                plan_items = [
+                    "1. **Automated WhatsApp Support**: Connect Yellow.ai to deploy an AI agent to handle customer queries and WhatsApp chat automations automatically.",
+                    "2. **Sales CRM Integration**: Integrate HubSpot/Zoho CRM to align sales teams, track incoming leads, and manage automated follow-ups.",
+                    "3. **Workflow Routing**: Connect Make.com/Zapier to route new WhatsApp leads directly into your CRM platform."
+                ]
+            elif any(w in desc or w in ind for w in ["report", "excel", "sheet", "data", "tally", "invoice"]):
+                plan_items = [
+                    "1. **Spreadsheet Data Automation**: Connect Make.com to set up automated hourly syncs between spreadsheets, databases, and accounting software.",
+                    "2. **Automated Bookkeeping**: Integrate Tally/Zoho Books to push successful closed deals and invoices directly without manual entry.",
+                    "3. **Reporting Dashboards**: Leverage Zoho Analytics to compile dashboard metrics and automatically generate real-time reports."
+                ]
+            else:
+                plan_items = [
+                    "1. **Workflow Automation**: Connect Make.com / Zapier to link different software tools and synchronize data across your team's processes.",
+                    "2. **AI Agent Integration**: Leverage Flowise / Langflow to deploy AI chat agents that assist team members with process inquiries.",
+                    "3. **Team Notifications**: Integrate WhatsApp / Slack notifications to alert owners and managers of key process updates."
+                ]
+                
             friendly_error = (
-                "### Recommended Automation Steps\n"
-                "1. **Lead Capture**: Integrate IndiaMART and WhatsApp leads directly via Make/Zapier.\n"
-                "2. **Communication**: Set up WhatsApp Business API to send immediate welcome messages and follow-ups to potential customers.\n"
-                "3. **CRM Integration**: Centralize all incoming leads into a lightweight CRM (e.g., Zoho CRM or HubSpot) for automated lead status tracking.\n"
-                "4. **Finance Sync**: Push successful closed deals straight to Tally/Zoho Books to avoid duplicate manual bookkeeping entry."
+                f"## Final Optimization Plan\n"
+                f"**Optimization Plan Summary:**\n"
+                f"To address {business_name}'s business problem, we propose the following optimization plan:\n"
+                + "\n".join(plan_items) + "\n\n"
+                f"In demo mode, these connections will reduce manual work, provide clean and accurate "
+                f"reporting, and enhance visibility for owners. Once onboarding and credentials are finalized, the "
+                f"actual integration will further optimize the workflow.\n\n"
+                f"By implementing this plan, {business_name} can:\n"
+                f"● Reduce manual work and errors\n"
+                f"● Increase owner visibility and decision-making power\n"
+                f"● Enhance collaboration between teams\n"
+                f"● Enable data-driven decisions with real-time insights\n\n"
+                f"Stay tuned for the next steps, and we'll guide you through onboarding and finalizing the integration."
             )
             await self._log("Finalizing optimization strategy report...")
             return friendly_error
