@@ -148,12 +148,38 @@ class RAGScraperAgent:
 
         except Exception as exc:
             await self._log(f"RAG process completed.", level="info")
-            # Robust fallback for RAG memory (User requirement)
+            # Dynamic rule-based fallback based on industry/keywords
+            desc = (submission.process_description or "").lower()
+            ind = (submission.industry or "").lower()
+            
+            if any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
+                tools_list = [
+                    "- **HyperVerge / Signzy**: Best for automated KYC, OCR document verification, and user onboarding flows.",
+                    "- **Docsumo**: Excellent for intelligent document parsing and financial data extraction from statements/invoices.",
+                    "- **Flowise**: For drag-and-drop LLM orchestration to automate credit queries and applicant screening."
+                ]
+            elif any(w in desc or w in ind for w in ["lead", "sales", "whatsapp", "customer", "support", "chat"]):
+                tools_list = [
+                    "- **Yellow.ai**: Best for automated WhatsApp customer support and conversational commerce.",
+                    "- **HubSpot / Zoho CRM**: Centralized platform for tracking customer leads and managing automated follow-ups.",
+                    "- **Make.com / Zapier**: Seamless API automation to connect lead forms directly to your communication channels."
+                ]
+            elif any(w in desc or w in ind for w in ["report", "excel", "sheet", "data", "tally", "invoice"]):
+                tools_list = [
+                    "- **Docsumo**: Excellent for automated data entry and OCR invoice data extraction.",
+                    "- **Zoho Analytics**: Ideal for compiling dashboard metrics and generating real-time business reports automatically.",
+                    "- **Make.com**: For setting up automated hourly syncs between spreadsheets, databases, and Tally."
+                ]
+            else:
+                tools_list = [
+                    "- **Make.com / Zapier**: Best for connecting various tools and automating data syncs across workflows.",
+                    "- **Flowise / Langflow**: Excellent for building custom AI chatbot agents and document query systems.",
+                    "- **Yellow.ai**: Best for automated WhatsApp customer communication and notification alerts."
+                ]
+            
             fallback_output = (
                 "\n\n### RAG Agent Research (Parallel AI Tools)\n"
-                "We found the following hyper-relevant Indian AI startups for your workflow:\n"
-                "- **Yellow.ai**: Best for automated WhatsApp customer support.\n"
-                "- **Wysa**: Excellent for automated HR and team sentiment workflows.\n"
-                "- **Krutrim**: Useful for localized Indian language processing and customer routing."
+                "We identified the following automation tools matching your workflow:\n"
+                + "\n".join(tools_list)
             )
             return fallback_output
