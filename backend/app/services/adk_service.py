@@ -146,6 +146,33 @@ class InnoalaxyAgent:
             if "GROQ_API_KEY" in os.environ:
                 os.environ["GROQ_API_KEY"] = os.environ["GROQ_API_KEY"].strip()
 
+            from app.core.config import get_settings
+            settings = get_settings()
+            groq_keys = [
+                settings.groq_api_key_3,
+                settings.groq_api_key_4,  # User's new backup key
+                settings.groq_api_key,
+                os.environ.get("GROQ_API_KEY")
+            ]
+            groq_keys = [k.strip() for k in groq_keys if k and k.strip()]
+
+            async def try_groq_completion(model, messages, tools=None, tool_choice=None):
+                last_exc = None
+                for key in groq_keys:
+                    try:
+                        return await asyncio.to_thread(
+                            litellm.completion,
+                            model=model,
+                            messages=messages,
+                            tools=tools,
+                            tool_choice=tool_choice,
+                            api_key=key
+                        )
+                    except Exception as e:
+                        logger.warning(f"Groq API call failed with key {key[:10]}...: {e}")
+                        last_exc = e
+                raise last_exc or RuntimeError("All Groq API keys failed.")
+
             model_name = "gemini/gemini-2.5-flash"
             await self._log("Agent instantiated with tools: send_whatsapp, pick_software_integration")
             await self._log(f"Attempting execution with model: {model_name}")
@@ -166,8 +193,7 @@ class InnoalaxyAgent:
                     logger.warning("Gemini quota reached (429/503). Falling back to Groq via litellm...")
                     model_name = "groq/llama-3.1-8b-instant"
                     await self._log(f"High network traffic. Optimizing via secondary AI nodes...")
-                    response = await asyncio.to_thread(
-                        litellm.completion,
+                    response = await try_groq_completion(
                         model=model_name,
                         messages=messages,
                         tools=tools,
@@ -196,11 +222,29 @@ class InnoalaxyAgent:
                 
                 # Get final response after tool execution
                 await self._log("Compiling final report after tool execution...")
-                final_response = await asyncio.to_thread(
-                    litellm.completion,
-                    model=model_name,
-                    messages=messages
-                )
+                try:
+                    if model_name.startswith("groq/"):
+                        final_response = await try_groq_completion(
+                            model=model_name,
+                            messages=messages
+                        )
+                    else:
+                        final_response = await asyncio.to_thread(
+                            litellm.completion,
+                            model=model_name,
+                            messages=messages
+                        )
+                except Exception as e:
+                    if not model_name.startswith("groq/"):
+                        logger.warning("Gemini failed during final response. Falling back to Groq...")
+                        model_name = "groq/llama-3.1-8b-instant"
+                        final_response = await try_groq_completion(
+                            model=model_name,
+                            messages=messages
+                        )
+                    else:
+                        raise e
+
                 if final_response.choices and len(final_response.choices) > 0:
                     output = final_response.choices[0].message.content or ""
                 else:

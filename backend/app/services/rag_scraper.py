@@ -100,6 +100,16 @@ class RAGScraperAgent:
 
             await self._log("Analyzing business against RAG memory using secondary API (GEMINI_API_KEY_2)...")
             
+            from app.core.config import get_settings
+            settings = get_settings()
+            groq_keys = [
+                fallback_key,
+                settings.groq_api_key_3,
+                settings.groq_api_key_4,  # User's new backup key
+                settings.groq_api_key
+            ]
+            groq_keys = [k.strip() for k in groq_keys if k and k.strip()]
+
             try:
                 # Attempt with Gemini API 2
                 response = await asyncio.to_thread(
@@ -111,12 +121,22 @@ class RAGScraperAgent:
             except Exception as e:
                 # Fallback to Groq API 2
                 await self._log("Secondary Gemini API failed/rate-limited. Falling back to Secondary Groq API...", level="warning")
-                response = await asyncio.to_thread(
-                    litellm.completion,
-                    model="groq/llama-3.1-8b-instant",
-                    messages=messages,
-                    api_key=fallback_key if fallback_key else None
-                )
+                response = None
+                last_exc = e
+                for key in groq_keys:
+                    try:
+                        response = await asyncio.to_thread(
+                            litellm.completion,
+                            model="groq/llama-3.1-8b-instant",
+                            messages=messages,
+                            api_key=key
+                        )
+                        break
+                    except Exception as ge:
+                        logger.warning(f"Secondary Groq API failed with key {key[:10]}...: {ge}")
+                        last_exc = ge
+                if not response:
+                    raise last_exc
                 
             if response.choices and len(response.choices) > 0:
                 output = response.choices[0].message.content or ""
