@@ -221,28 +221,13 @@ export function DashboardPage() {
               </div>
             </div>
 
-            {/* Admin Controls (Not Printed) */}
-            <div className="bg-slate-100 p-6 border-t border-line shadow-inner">
-                <textarea className="w-full min-h-24 rounded-xl border border-line p-4 text-sm focus:outline-primary focus:ring-2 focus:ring-primary/20 shadow-sm" value={selected.internal_notes || ""} onChange={(e) => setSelected({ ...selected, internal_notes: e.target.value })} placeholder="Add internal admin notes here..." />
-                
-                <div className="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-slate-500 uppercase tracking-wide mr-2">Status:</span>
-                    {["reviewed", "building", "delivered"].map((status) => (
-                      <Button 
-                        key={status} 
-                        onClick={() => setStatus(status)} 
-                        className={`capitalize ${selected.status === status ? "bg-primary text-white shadow-md shadow-primary/20" : "bg-white text-slate-600 hover:bg-slate-50 border-slate-300"}`} 
-                      >
-                        {selected.status === status && <Check size={14} className="mr-1.5" />} {status}
-                      </Button>
-                    ))}
-                  </div>
-                  <button onClick={handleDelete} className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-100 transition-colors">
-                    Delete Submission
-                  </button>
-                </div>
-            </div>
+            {/* Internal Notes Display (Read-Only) */}
+            {selected.internal_notes && (
+              <div className="bg-slate-100 p-6 border-t border-line shadow-inner">
+                  <h4 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-2">Admin Notes</h4>
+                  <p className="text-slate-700 text-sm whitespace-pre-wrap">{selected.internal_notes}</p>
+              </div>
+            )}
 
           </div>
         </div>
