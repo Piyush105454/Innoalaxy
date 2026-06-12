@@ -19,7 +19,7 @@ export function DashboardPage() {
     try {
       const token = await getToken();
       if (!token) return;
-      const data = await listSubmissions();
+      const data = await listUserSubmissions(token);
       setRows(data);
     } catch (e) {
       console.error("Failed to load submissions:", e);
@@ -87,7 +87,7 @@ export function DashboardPage() {
         <div className="mt-6 grid gap-4 md:grid-cols-4">
           <Metric label="Submissions" value={String(rows.length)} />
           <Metric label="Avg score" value={`${avgScore}%`} />
-          <Metric label="Hours found" value={`${totalHours}`} />
+          <Metric label="Hours found" value={`${Math.round(totalHours)}`} />
           <Metric label="Conversion" value="0%" />
         </div>
         
