@@ -17,10 +17,9 @@ class RAGScraperAgent:
     Parallel RAG Agent that scrapes AI tool directories and uses a secondary set of API keys
     to provide advanced automation product recommendations.
     """
-    
     URLS_TO_SCRAPE = [
-        "https://www.ai-startups.pro/country/India/#google_vignette",
-        "https://topai.tools/top-100-ai-tools"
+        "https://r.jina.ai/https://www.ai-startups.pro/country/India/",
+        "https://r.jina.ai/https://topai.tools/top-100-ai-tools"
     ]
 
     def __init__(self, db: Session, run_id: UUID) -> None:
@@ -46,15 +45,16 @@ class RAGScraperAgent:
     async def _scrape_urls(self) -> str:
         await self._log("Scraping real-time AI tools from top directories...")
         context = "Extracted AI Tools Context:\n"
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        async with httpx.AsyncClient(timeout=15.0, headers=headers) as client:
             for url in self.URLS_TO_SCRAPE:
                 try:
                     response = await client.get(url, follow_redirects=True)
                     if response.status_code == 200:
-                        # Take first 1000 chars as summary to avoid blowing up context window
-                        # and simple text extraction since we don't have BeautifulSoup
+                        # Jina Reader returns clean markdown. 
+                        # We take the first 8000 chars to give the LLM enough context.
                         text = response.text
-                        clean_text = ' '.join(text.split())[:1000]
+                        clean_text = ' '.join(text.split())[:8000]
                         context += f"- Source ({url}): {clean_text}...\n"
                         await self._log(f"Successfully scraped context from {url}")
                     else:
