@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
 
 from app.models.db_models import AuditResultDB, Contact, Submission
 from app.models.schemas import AuditResult, SubmissionDetail, SubmissionRequest, SubmissionSummary, AgentRunResult
@@ -65,11 +65,28 @@ class AuditService:
         )
 
     def list_submissions(self) -> list[SubmissionSummary]:
-        rows = self.db.execute(select(Submission).order_by(Submission.created_at.desc())).scalars().all()
+        rows = (
+            self.db.execute(
+                select(Submission)
+                .options(joinedload(Submission.audit_result), selectinload(Submission.contacts))
+                .order_by(Submission.created_at.desc())
+            )
+            .scalars()
+            .all()
+        )
         return self._format_summaries(rows)
 
     def list_user_submissions(self, user_id: str) -> list[SubmissionSummary]:
-        rows = self.db.execute(select(Submission).where(Submission.user_id == user_id).order_by(Submission.created_at.desc())).scalars().all()
+        rows = (
+            self.db.execute(
+                select(Submission)
+                .options(joinedload(Submission.audit_result), selectinload(Submission.contacts))
+                .where(Submission.user_id == user_id)
+                .order_by(Submission.created_at.desc())
+            )
+            .scalars()
+            .all()
+        )
         return self._format_summaries(rows)
 
     def _format_summaries(self, rows) -> list[SubmissionSummary]:
