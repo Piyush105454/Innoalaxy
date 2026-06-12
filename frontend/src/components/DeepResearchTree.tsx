@@ -42,9 +42,9 @@ export function DeepResearchTree() {
           
           {/* Branch 1: AI Tools */}
           <div className="relative flex flex-col items-center w-1/3">
-            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible">
+            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible" viewBox="0 0 100 64" preserveAspectRatio="none">
               <motion.path
-                d="M 50% 0 Q 50% 32, 50% 64"
+                d="M 50 0 Q 50 32, 50 64"
                 fill="transparent"
                 stroke="#3b82f6"
                 strokeWidth="2"
@@ -89,9 +89,9 @@ export function DeepResearchTree() {
 
           {/* Branch 2: Memory & Context */}
           <div className="relative flex flex-col items-center w-1/3">
-            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible">
+            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible" viewBox="0 0 100 64" preserveAspectRatio="none">
               <motion.path
-                d="M 50% 0 L 50% 64"
+                d="M 50 0 L 50 64"
                 fill="transparent"
                 stroke="#8b5cf6"
                 strokeWidth="2"
@@ -133,9 +133,9 @@ export function DeepResearchTree() {
 
           {/* Branch 3: AI Startups */}
           <div className="relative flex flex-col items-center w-1/3">
-            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible">
+            <svg className="absolute -top-16 left-1/2 w-full h-16 pointer-events-none transform -translate-x-1/2 overflow-visible" viewBox="0 0 100 64" preserveAspectRatio="none">
               <motion.path
-                d="M 50% 0 Q 50% 32, 50% 64"
+                d="M 50 0 Q 50 32, 50 64"
                 fill="transparent"
                 stroke="#10b981"
                 strokeWidth="2"
