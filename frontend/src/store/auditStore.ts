@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { AgentLog, AuditResult } from "../lib/types";
 
 interface AuditState {
@@ -19,21 +20,28 @@ interface AuditState {
   reset: () => void;
 }
 
-export const useAuditStore = create<AuditState>((set) => ({
-  currentStep: 1,
-  auditResult: null,
-  agentRunId: null,
-  agentLogs: [],
-  agentOutput: "",
-  loadingAudit: false,
-  loadingAgent: false,
-  setStep: (currentStep) => set({ currentStep }),
-  setAuditResult: (auditResult) => set({ auditResult }),
-  setAgentRunId: (agentRunId) => set({ agentRunId }),
-  setAgentLogs: (agentLogs) => set({ agentLogs }),
-  setAgentOutput: (agentOutput) => set({ agentOutput }),
-  setLoadingAudit: (loadingAudit) => set({ loadingAudit }),
-  setLoadingAgent: (loadingAgent) => set({ loadingAgent }),
-  reset: () => set({ currentStep: 1, auditResult: null, agentRunId: null, agentLogs: [], agentOutput: "", loadingAudit: false, loadingAgent: false })
-}));
+export const useAuditStore = create<AuditState>()(
+  persist(
+    (set) => ({
+      currentStep: 1,
+      auditResult: null,
+      agentRunId: null,
+      agentLogs: [],
+      agentOutput: "",
+      loadingAudit: false,
+      loadingAgent: false,
+      setStep: (currentStep) => set({ currentStep }),
+      setAuditResult: (auditResult) => set({ auditResult }),
+      setAgentRunId: (agentRunId) => set({ agentRunId }),
+      setAgentLogs: (agentLogs) => set({ agentLogs }),
+      setAgentOutput: (agentOutput) => set({ agentOutput }),
+      setLoadingAudit: (loadingAudit) => set({ loadingAudit }),
+      setLoadingAgent: (loadingAgent) => set({ loadingAgent }),
+      reset: () => set({ currentStep: 1, auditResult: null, agentRunId: null, agentLogs: [], agentOutput: "", loadingAudit: false, loadingAgent: false })
+    }),
+    {
+      name: 'audit-storage',
+    }
+  )
+);
 
