@@ -55,7 +55,7 @@ class RAGScraperAgent:
                         # Jina Reader returns clean markdown. 
                         # We take the first 8000 chars to give the LLM enough context.
                         text = response.text
-                        clean_text = ' '.join(text.split())[:8000]
+                        clean_text = ' '.join(text.split())[:2000]
                         context += f"- Source ({url}): {clean_text}...\n"
                         await self._log(f"Successfully scraped context from {url}")
                     else:
