@@ -106,10 +106,10 @@ class InnoalaxyAgent:
             return f"Selected Custom Agent + API Pipeline for {area}"
         return "Unknown tool"
 
-    async def run(self) -> None:
+    async def run(self) -> str:
         run = self.db.get(AgentRun, self.run_id)
         if not run:
-            return
+            return ""
 
         run.status = "running"
         run.logs = []
@@ -122,15 +122,29 @@ class InnoalaxyAgent:
 
             await self._log(f"Starting real ADK Agent for {submission.business_name} in {submission.industry}")
 
-            # The prompt includes the user's business context
+            # Extract audit context if available
+            audit = submission.audit_result
+            audit_info = ""
+            if audit:
+                audit_info = (
+                    f"Audit Score: {audit.automation_score}%\n"
+                    f"Hours Wasted Weekly: {audit.hours_wasted_weekly}\n"
+                    f"Detected Industry Context: {audit.industry_context}\n"
+                    f"Audit Summary: {audit.summary}\n"
+                    f"Recommended Blueprint: {json.dumps(audit.blueprint.model_dump() if audit.blueprint else {})}\n"
+                )
+
+            # The prompt includes the user's business context and audit intelligence
             system_instruction = (
                 f"{AGENT_SYSTEM_PROMPT}\n\n"
                 f"Client: {submission.business_name}\n"
                 f"Industry: {submission.industry}\n"
                 f"Problem: {submission.process_description}\n\n"
+                f"Audit Result context (from Innoalaxy Audit Engine):\n{audit_info}\n\n"
                 f"Your task: 1. Use the pick_software_integration tool to find solutions. "
                 f"2. Use the send_whatsapp tool to notify the owner. "
-                f"3. Summarize the final optimization plan."
+                f"3. Summarize the final optimization plan. Make sure tool choices align with their scale "
+                f"and do not use outdated tools like TradeGecko or generic shipping aggregators like DHL API."
             )
 
             messages = [
@@ -278,8 +292,34 @@ class InnoalaxyAgent:
             desc = (submission.process_description or "").lower()
             ind = (submission.industry or "").lower()
             business_name = submission.business_name
+            biz_lower = business_name.lower()
             
-            if any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
+            if any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
+                if "rebel" in biz_lower or "enterprise" in desc or "200" in (submission.team_size or "") or "500" in (submission.team_size or ""):
+                    plan_items = [
+                        "1. **Multi-Brand Inventory & Order Sync**: Connect custom API feeds from Swiggy/Zomato to Oracle Netsuite / SAP SCM to keep inventory synced across virtual brands in real-time.",
+                        "2. **AI Demand Forecasting Engine**: Deploy a custom ML model to forecast hourly demand spikes by kitchen location and predict ingredient wastage dynamically.",
+                        "3. **Kitchen-to-Rider SLA Monitoring**: Integrate courier aggregate delivery orchestration APIs to track prep-to-handover time and optimize dispatch."
+                    ]
+                else:
+                    plan_items = [
+                        "1. **POS API Integration**: Connect Swiggy/Zomato platform orders directly into POS systems like Petpooja or Odoo.",
+                        "2. **Automated Inventory Tracking**: Use Make.com to sync Zoho Inventory/Odoo with daily platform sales to automate raw material deduction.",
+                        "3. **WhatsApp Kitchen Alerts**: Send automated notifications to supervisors when inventory is low or order volume spikes."
+                    ]
+            elif any(w in desc or w in ind or w in biz_lower for w in ["delivery", "grocery", "logistic", "transit", "route", "ship", "warehouse"]):
+                if "zepto" in biz_lower or "enterprise" in desc or "200" in (submission.team_size or "") or "500" in (submission.team_size or ""):
+                    plan_items = [
+                        "1. **Real-Time Rider Allocation**: Deploy an ML-based routing system to sequence batches and allocate hyperlocal riders dynamically under 10-minute thresholds.",
+                        "2. **WMS Inventory Sync**: Integrate custom APIs to reconcile warehouse inventory instantaneously and eliminate phantom listings.",
+                        "3. **Logistics SLA Tracking**: Connect delivery SLA orchestration APIs to monitor end-to-end rider ETAs and dark store prep times."
+                    ]
+                else:
+                    plan_items = [
+                        "1. **Automated Shipping Labels**: Use Make.com to sync new orders with Shiprocket or Delhivery APIs to generate labels instantly.",
+                        "2. **Google Sheets Dispatch Monitor**: Automate dispatch tracking and delivery delay notifications using Make.com and WhatsApp APIs."
+                    ]
+            elif any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
                 plan_items = [
                     "1. **Customer Acquisition & Credit Operations**: Connect HyperVerge / Signzy to automate KYC, OCR document verification, and user onboarding. This will enable automatic extraction of data and eliminate manual errors.",
                     "2. **Intelligent Data Extraction**: Integrate Docsumo to parse financial bank statements and invoices automatically, extracting data instantly.",

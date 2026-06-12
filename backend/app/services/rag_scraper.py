@@ -84,14 +84,29 @@ class RAGScraperAgent:
             if not api_key:
                 await self._log("No GEMINI_API_KEY_2 found, using standard fallback.", level="warning")
 
+            audit = submission.audit_result
+            audit_info = ""
+            if audit:
+                audit_info = (
+                    f"Audit Score: {audit.automation_score}%\n"
+                    f"Hours Wasted Weekly: {audit.hours_wasted_weekly}\n"
+                    f"Detected Industry Context: {audit.industry_context}\n"
+                    f"Audit Summary: {audit.summary}\n"
+                )
+
             system_instruction = (
-                f"You are a specialized AI RAG researcher. \n"
+                f"You are a specialized AI RAG researcher for Innoalaxy.\n"
                 f"Client: {submission.business_name}\n"
                 f"Industry: {submission.industry}\n"
                 f"Problem: {submission.process_description}\n\n"
-                f"Use the following real-time scraped context to recommend exactly 3 specific, modern AI products/startups "
-                f"that solve their problem. Do not be generic.\n\n"
-                f"{scraped_context}"
+                f"Audit Result context (from Innoalaxy Audit Engine):\n{audit_info}\n\n"
+                f"Use the following real-time scraped context to recommend exactly 3 specific, modern AI products or capabilities "
+                f"that solve their exact operating problems. Do not suggest generic AI products.\n"
+                f"Categorize your suggestions into these relevant AI domains based on their operations:\n"
+                f"- **Operations AI** (e.g. demand forecasting, ingredient optimization, food wastage prediction, routing/ETA prediction, queue load balancing)\n"
+                f"- **Customer AI** (e.g. multilingual support, order recovery automation, risk/fraud detection)\n"
+                f"- **Expansion AI** (e.g. geo-demand forecasting, location intelligence)\n\n"
+                f"Scraped Context:\n{scraped_context}"
             )
 
             messages = [
@@ -151,35 +166,42 @@ class RAGScraperAgent:
             # Dynamic rule-based fallback based on industry/keywords
             desc = (submission.process_description or "").lower()
             ind = (submission.industry or "").lower()
+            biz_lower = submission.business_name.lower()
             
-            if any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
+            if any(w in desc or w in ind or w in biz_lower for w in ["food", "kitchen", "restaurant", "swiggy", "zomato", "eat"]):
                 tools_list = [
-                    "- **HyperVerge / Signzy**: Best for automated KYC, OCR document verification, and user onboarding flows.",
-                    "- **Docsumo**: Excellent for intelligent document parsing and financial data extraction from statements/invoices.",
-                    "- **Flowise**: For drag-and-drop LLM orchestration to automate credit queries and applicant screening."
+                    "- **Operations AI (Demand & Ingredient Forecasting)**: Custom ML models (using historical order data) to predict hourly demand spikes per location and optimize stock levels to minimize food wastage.",
+                    "- **Customer AI (Order Recovery & Chat Support)**: Yellow.ai or Haptik to handle automated order recovery and multilingual support queries across delivery channels.",
+                    "- **Expansion AI (Geo-Demand & Location Intelligence)**: SiteRecon or custom GIS layers to run location feasibility studies for new cloud kitchen locations."
                 ]
-            elif any(w in desc or w in ind for w in ["lead", "sales", "whatsapp", "customer", "support", "chat"]):
+            elif any(w in desc or w in ind or w in biz_lower for w in ["delivery", "grocery", "logistic", "transit", "route", "ship", "warehouse"]):
                 tools_list = [
-                    "- **Yellow.ai**: Best for automated WhatsApp customer support and conversational commerce.",
-                    "- **HubSpot / Zoho CRM**: Centralized platform for tracking customer leads and managing automated follow-ups.",
-                    "- **Make.com / Zapier**: Seamless API automation to connect lead forms directly to your communication channels."
+                    "- **Operations AI (ETA & Batch Routing Optimization)**: Custom logistics ML route matching engines to batch orders and optimize driver dispatches in under 10 minutes.",
+                    "- **Customer AI (Delivery Support Agents)**: Automated customer support agents to resolve delivery issues, check live status, and issue refunds.",
+                    "- **Expansion AI (Dark Store Location Selection)**: GIS analytics to determine high-density zones for opening new micro-fulfillment centers."
                 ]
-            elif any(w in desc or w in ind for w in ["report", "excel", "sheet", "data", "tally", "invoice"]):
+            elif any(w in desc or w in ind for w in ["credit", "finance", "kyc", "bank", "onboard", "document", "pdf", "file", "ocr"]):
                 tools_list = [
-                    "- **Docsumo**: Excellent for automated data entry and OCR invoice data extraction.",
-                    "- **Zoho Analytics**: Ideal for compiling dashboard metrics and generating real-time business reports automatically.",
-                    "- **Make.com**: For setting up automated hourly syncs between spreadsheets, databases, and Tally."
+                    "- **Operations AI (Automated Underwriting & Document Parsing)**: Docsumo or custom OCR models to parse complex bank statements and financials instantly.",
+                    "- **Customer AI (KYC & Risk Checks)**: Signzy or HyperVerge for real-time video KYC, identity verification, and fraud detection.",
+                    "- **Expansion AI (Lead Qualification Analytics)**: Custom machine learning classifiers to score incoming applications and segment credit profiles."
+                ]
+            elif any(w in desc or w in ind for w in ["health", "hospital", "clinic", "patient", "medical"]):
+                tools_list = [
+                    "- **Operations AI (Patient flow & EHR Integrations)**: Custom clinical logging AI to transcribe doctor notes directly into central EHR databases.",
+                    "- **Customer AI (Automated Patient Support)**: Automated conversational AI for booking appointments and follow-up reminders.",
+                    "- **Expansion AI (Geo-Health Demographics)**: Spatial health analytics to optimize triage center placements."
                 ]
             else:
                 tools_list = [
-                    "- **Make.com / Zapier**: Best for connecting various tools and automating data syncs across workflows.",
-                    "- **Flowise / Langflow**: Excellent for building custom AI chatbot agents and document query systems.",
-                    "- **Yellow.ai**: Best for automated WhatsApp customer communication and notification alerts."
+                    "- **Operations AI (Process Flow Automation)**: Custom Python workflows or Flowise to automate document routing and approvals.",
+                    "- **Customer AI (Conversational Assistants)**: AI chat widgets built via Yellow.ai or Flowise to handle repetitive queries.",
+                    "- **Expansion AI (Market Segmentation)**: Automated lead enrichment and predictive profiling engines."
                 ]
             
             fallback_output = (
                 "\n\n### RAG Agent Research (Parallel AI Tools)\n"
-                "We identified the following automation tools matching your workflow:\n"
+                "We identified the following automation tools matching your workflow:\n\n"
                 + "\n".join(tools_list)
             )
             return fallback_output

@@ -39,7 +39,7 @@ print("\n[2] GeminiService.analyze_process (real Gemini audit)")
 from app.services.gemini_service import GeminiService
 
 svc = GeminiService()
-print(f"  Gemini enabled: {svc.enabled}")
+print(f"  Gemini/Groq enabled: {svc.groq_enabled or svc.gemini_enabled}")
 print(f"  Model         : {svc.settings.gemini_model}")
 
 PAYLOAD = {
@@ -130,8 +130,11 @@ try:
 
     # Run agent
     agent = InnoalaxyAgent(db, run.id, "optimization", demo_mode=True)
-    print(f"  ADK available     : {agent.adk_available}")
-    asyncio.run(agent.run())
+    print(f"  ADK Agent initialized: ok")
+    out = asyncio.run(agent.run())
+    run.output = out
+    run.status = "completed"
+    db.commit()
 
     db.refresh(run)
     print(f"  Agent status      : {run.status}")

@@ -26,7 +26,8 @@ def test_analyze_process_hindi_mixed(client, sample_submission_data):
 
 def test_gemini_fallback_generates_blueprint(sample_submission_data):
     service = GeminiService()
-    service.enabled = False
+    service.groq_enabled = False
+    service.gemini_enabled = False
     audit = service._fallback_audit(sample_submission_data)
     assert audit.automation_score > 0
 
