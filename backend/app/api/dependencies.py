@@ -14,11 +14,12 @@ async def get_clerk_jwks():
     global _jwks
     if not _jwks:
         settings = get_settings()
+        # Derive the FAPI URL from the publishable key we know from the frontend
+        # pk_test_aW52aXRpbmctY2l2ZXQtNTEuY2xlcmsuYWNjb3VudHMuZGV2JA -> inviting-civet-51.clerk.accounts.dev
+        jwks_url = "https://inviting-civet-51.clerk.accounts.dev/.well-known/jwks.json"
+        
         async with httpx.AsyncClient() as client:
-            response = await client.get(
-                "https://api.clerk.com/v1/jwks",
-                headers={"Authorization": f"Bearer {settings.clerk_secret_key}"} if settings.clerk_secret_key else {}
-            )
+            response = await client.get(jwks_url)
             if response.status_code == 200:
                 _jwks = response.json()
             else:
