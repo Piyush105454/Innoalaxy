@@ -1,10 +1,12 @@
 import { ReactNode } from "react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "react-router-dom";
+import { useAuditStore } from "../../store/auditStore";
 
 export function DashboardLayout({ children, activePath }: { children: ReactNode; activePath: "/dashboard" | "/audit" | "/admin" }) {
   const { user } = useUser();
   const isAdmin = user?.primaryEmailAddress?.emailAddress === "piyush.tamoli@innoalaxy.in";
+  const resetAudit = useAuditStore((s) => s.reset);
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-ink">
@@ -20,6 +22,7 @@ export function DashboardLayout({ children, activePath }: { children: ReactNode;
           <Link 
             className={`block rounded px-3 py-2 ${activePath === "/audit" ? "bg-slate-100 font-semibold" : "text-slate-600 hover:bg-slate-50"}`} 
             to="/audit"
+            onClick={() => resetAudit()}
           >
             Audit Flow
           </Link>
