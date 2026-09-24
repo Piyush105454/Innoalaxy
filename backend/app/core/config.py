@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     groq_api_key: str | None = None
     groq_api_key_3: str | None = None
     groq_api_key_4: str | None = None
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
     innoalaxy_admin_key: str = "change-me"
     frontend_url: str = "http://localhost:5173"
     dashboard_url: str = "http://localhost:5173/dashboard"
