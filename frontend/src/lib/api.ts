@@ -1,6 +1,6 @@
 import type { AgentStatus, AuditResult, SubmissionDetail, SubmissionSummary } from "./types";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://localhost:8000" : "https://innoalaxy-13277279334.asia-south2.run.app");
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? "http://localhost:8000" : "https://innoalaxy-1lbq.vercel.app");
 const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY ?? "change-me";
 
 async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 25000, token?: string): Promise<T> {
