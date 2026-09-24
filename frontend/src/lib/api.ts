@@ -13,7 +13,8 @@ async function request<T>(path: string, options: RequestInit = {}, timeoutMs = 2
   }
 
   try {
-    const res = await fetch(`${API_BASE}${path}`, { ...options, headers, signal: controller.signal });
+    const cleanBase = API_BASE.replace(/\/$/, '');
+    const res = await fetch(`${cleanBase}${path}`, { ...options, headers, signal: controller.signal });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(json.detail ?? json.message ?? `Request failed: ${res.status}`);
